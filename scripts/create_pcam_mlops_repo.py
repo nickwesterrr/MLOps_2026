@@ -1,5 +1,5 @@
-import os
 from pathlib import Path
+
 
 def create_file(path, content=""):
     """Creates a file with specific content, ensuring parent directories exist."""
@@ -8,6 +8,7 @@ def create_file(path, content=""):
     with open(p, "w", encoding="utf-8") as f:
         f.write(content.strip() + "\n")
     print(f"Created: {path}")
+
 
 # ==========================================
 # 1. SETUP & CONFIG FILES
@@ -494,10 +495,8 @@ structure = {
     "requirements.txt": REQUIREMENTS_TXT,
     "setup.py": SETUP_PY,
     "pyproject.toml": PYPROJECT_TOML,
-
     # --- Source Code ---
     "src/ml_core/__init__.py": "__version__ = '0.1.0'",
-    
     # Data Module
     "src/ml_core/data/__init__.py": """
 from .loader import get_dataloaders
@@ -507,7 +506,6 @@ __all__ = ["get_dataloaders", "PCAMDataset"]
 """,
     "src/ml_core/data/pcam.py": PCAM_PY,
     "src/ml_core/data/loader.py": LOADER_PY,
-    
     # Models Module
     "src/ml_core/models/__init__.py": """
 from .mlp import MLP
@@ -516,7 +514,6 @@ from .mlp import MLP
 __all__ = ["MLP"]
 """,
     "src/ml_core/models/mlp.py": MLP_PY,
-    
     # Solver Module
     "src/ml_core/solver/__init__.py": """
 from .trainer import Trainer
@@ -524,7 +521,6 @@ from .trainer import Trainer
 __all__ = ["Trainer"]
 """,
     "src/ml_core/solver/trainer.py": TRAINER_PY,
-    
     # Utils
     "src/ml_core/utils/__init__.py": """
 from .logging import load_config, seed_everything, setup_logger
@@ -534,14 +530,11 @@ __all__ = ["setup_logger", "seed_everything", "load_config", "ExperimentTracker"
 """,
     "src/ml_core/utils/logging.py": LOGGING_PY,
     "src/ml_core/utils/tracker.py": TRACKER_PY,
-
     # --- Experiments ---
     "experiments/configs/train_config.yaml": TRAIN_CONFIG,
     "experiments/train.py": TRAIN_SCRIPT,
-    
     # --- Scripts ---
     "scripts/plotting/plot_results_csv.py": PLOT_SCRIPT,
-    
     # --- Tests (Basic Placeholder) ---
     "tests/__init__.py": "",
     "tests/test_imports.py": """
@@ -549,8 +542,9 @@ def test_imports():
     from ml_core.data import PCAMDataset
     from ml_core.models import MLP
     assert True
-"""
+""",
 }
+
 
 def build_repo():
     print("--- Scaffolding PCAM MLOps Repository ---")
@@ -565,6 +559,7 @@ def build_repo():
     print("2. Activate:      source venv/bin/activate")
     print("3. Install:       pip install -e .")
     print("4. Fill Skeletons in src/ml_core/...")
+
 
 if __name__ == "__main__":
     build_repo()

@@ -1,11 +1,11 @@
-import numpy as np
+import random
+
 import matplotlib.pyplot as plt
+import numpy as np
 import torch
 import torch.nn as nn
-from torch.optim import SGD, Adam
-from torch.utils.data import Dataset, DataLoader
-import random 
-import typing
+from torch.optim import Adam
+from torch.utils.data import DataLoader, Dataset
 
 np.random.seed(1)
 torch.manual_seed(1)
@@ -28,44 +28,49 @@ plt.scatter(input_data[:, 0], input_data[:, 1], c=y, alpha=0.5)
 plt.title("Generated Data Distribution")
 plt.grid()
 plt.savefig("data_distribution.png")
-plt.close() # Close plot to free up memory
+plt.close()  # Close plot to free up memory
+
 
 class Model(nn.Module):
-    def __init__(self, input_dim: int=2, hidden_dim: int=5, output: int=1):
+    def __init__(self, input_dim: int = 2, hidden_dim: int = 5, output: int = 1):
         super().__init__()
-        
+
         self.fc1 = nn.Linear(input_dim, hidden_dim)
         self.fc2 = nn.Linear(hidden_dim, output)
         self.relu = nn.ReLU()
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        # x shape: [batch_size, input_dim=2] 
-        output = self.fc1(x) # shape: [batch_size, hidden_dim=5]
+        # x shape: [batch_size, input_dim=2]
+        output = self.fc1(x)  # shape: [batch_size, hidden_dim=5]
         output = self.relu(output)
         output = self.fc2(output)
         sigmoid = self.sigmoid(output)
-        return sigmoid # shape: [batch_size, 1]
+        return sigmoid  # shape: [batch_size, 1]
+
 
 class ExampleData(Dataset):
     def __init__(self, datapoints: np.array, labels: np.array):
         self.datapoints = torch.tensor(datapoints)
         self.labels = torch.tensor(labels)
-    
+
     def __len__(self):
-        return len(self.datapoints) # datapoints.shape[0]
+        return len(self.datapoints)  # datapoints.shape[0]
 
     def __getitem__(self, index: int):
         x = self.datapoints[index].float()
         y = self.labels[index].float()
         return x, y
 
-#model = Model(hidden_dim=1024)
-model = nn.Sequential(nn.Linear(2, 1024), nn.ReLU(), nn.Dropout(p=0.5), nn.Linear(1024, 1), nn.Sigmoid()) 
+
+# model = Model(hidden_dim=1024)
+model = nn.Sequential(
+    nn.Linear(2, 1024), nn.ReLU(), nn.Dropout(p=0.5), nn.Linear(1024, 1), nn.Sigmoid()
+)
 print(model)
 
-#data = list(zip(input_data, y))
-#random.shuffle(data)
+# data = list(zip(input_data, y))
+# random.shuffle(data)
 
 train_data = ExampleData(input_data, y)
 train_loader = DataLoader(train_data, batch_size=64, shuffle=True)
@@ -81,7 +86,7 @@ for epoch in range(5):
         # shape x: [4,2]
         optimizer.zero_grad()
 
-        output = model(x).squeeze(dim=1) # shape [4,1] -> shape [4]
+        output = model(x).squeeze(dim=1)  # shape [4,1] -> shape [4]
 
         loss = criterion(output, y)
         loss.backward()
@@ -97,10 +102,3 @@ plt.xlabel("Iteration")
 plt.ylabel("BCE Loss")
 plt.legend()
 plt.savefig("training_loss_dataloader_dropout_0.5.png")
-
-
-
-
-
-
-

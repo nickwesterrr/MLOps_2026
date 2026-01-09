@@ -2,21 +2,47 @@
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
+# --- PROJECT METADATA & DEPENDENCIES ---
 [project]
 name = "ml_core"
 version = "0.1.0"
+description = "My MLOps project for SURF/UvA"
+readme = "README.md"
+requires-python = ">=3.9"
 dependencies = [
-    # TODO: Migrate dependencies from requirements.txt here
+    "numpy",
+    "pandas",
+    "torch",
+    "torchvision",
+    "tensorboard",
+    "tqdm",
+    "pyyaml",
+    "python-dotenv",
+    # Dev tools are often listed here or in optional-dependencies
+    "pytest",
+    "ruff",
+    "pre-commit",
 ]
 
+# --- TOOL CONFIGURATION ---
 [tool.ruff]
-line-length = 88
+# Exclude a variety of commonly ignored directories.
 exclude = [".git", "__pycache__", "venv"]
+# Same as Black.
+line-length = 88
+indent-width = 4
 
 [tool.ruff.lint]
-#"I" handles import sorting, "B" finds likely bugs
+# E: pycodestyle errors
+# F: Pyflakes
+# I: isort (Import Sorting - MLOps critical!)
+# B: flake8-bugbear (Likely bugs)
 select = ["E", "F", "I", "B"]
-ignore = ["E501"] # Ignore long lines, we let the formatter handle it
+ignore = ["E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
