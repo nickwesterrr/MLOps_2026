@@ -68,7 +68,8 @@ class PCAMDataset(Dataset):
         label = self.y_data[real_idx][0]
 
         # Ensure uint8 for PIL compatibility
-        image = image.astype(np.uint8)
+        image = np.nan_to_num(image, nan=0.0, posinf=255.0, neginf=0.0)
+        image = np.clip(image, 0, 255).astype(np.uint8)
 
         if self.transform:
             image = self.transform(image)
