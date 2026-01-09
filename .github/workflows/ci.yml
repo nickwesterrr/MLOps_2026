@@ -1,0 +1,64 @@
+name: MLOps Pipeline
+
+# 1. TRIGGERS
+# Runs when code is pushed to main or dev, or a PR is opened against them.
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  lint:
+    # 2. ENVIRONMENT
+    # Spins up a fresh Ubuntu Virtual Machine on GitHub.
+    runs-on: ubuntu-latest
+
+    steps:
+      # 3. CHECKOUT
+      # Downloads your specific version of the code onto the VM.
+      - uses: actions/checkout@v3
+
+      # 4. INSTALL RUFF
+      # Installs Ruff for fast linting and formatting checks.
+      - name: Install Ruff
+        run: pip install ruff
+
+      # 5. CODE QUALITY (The "Gatekeeper")
+      # Checks for logic errors and formatting. If ugly, this fails.
+      - name: Lint Check
+        run: |
+          ruff check .
+          ruff format --check .
+
+  test:
+    # 6. ENVIRONMENT
+    # Spins up a fresh Ubuntu Virtual Machine on GitHub.
+    runs-on: ubuntu-latest
+
+    steps:
+      # 7. CHECKOUT
+      # Downloads your specific version of the code onto the VM.
+      - uses: actions/checkout@v3
+
+      # 8. PYTHON SETUP
+      # Installs Python 3.10 to ensure consistency.
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      # 9. INSTALL DEPENDENCIES
+      # Explicitly install CPU-only Torch to save space, then install your package.
+      - name: Install Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+          pip install -r requirements.txt
+          pip install pytest -e .
+
+      # 10. UNIT TESTS
+      # If this step fails, only the test job is marked as failed.
+      - name: Run Tests
+        run: |
+          pytest tests/
