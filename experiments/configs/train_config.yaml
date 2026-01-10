@@ -17,4 +17,5 @@ model:
 training:
   epochs: 5
   learning_rate: 0.001
+  log_after_steps: 10
   save_dir: "./experiments/results"
