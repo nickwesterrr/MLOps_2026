@@ -24,7 +24,7 @@ def main(args):
 
     # 4. Model
     model = MLP(
-        input_shape=config["model"]["input_shape"],
+        input_shape=config["data"]["input_shape"],
         hidden_units=config["model"]["hidden_units"],
         dropout_rate=config["model"]["dropout_rate"],
         num_classes=config["model"]["num_classes"],

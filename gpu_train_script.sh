@@ -12,10 +12,8 @@
 
 # Load environment modules
 module load 2025
-module load Python/3.13.1-GCCcore-14.2.0
-module load matplotlib/3.10.3-gfbf-2025a
 
 # Activate virtual environment
-source .venv/bin/activate
+source $HOME/MLOps_2026/.venv/bin/activate
 
 python $HOME/MLOps_2026/experiments/train.py --config experiments/configs/train_config.yaml
