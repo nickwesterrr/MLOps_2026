@@ -1,13 +1,13 @@
 import argparse
-import yaml
+
 import torch
 import torch.optim as optim
-import torch.nn as nn
 
 from ml_core.data import get_dataloaders
 from ml_core.models import MLP
 from ml_core.solver import Trainer
 from ml_core.utils import load_config
+
 # logger = setup_logger("Experiment_Runner")
 
 

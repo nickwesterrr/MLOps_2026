@@ -1,8 +1,8 @@
-from pathlib import Path
 import sys
+from pathlib import Path
 
-import torch
 import matplotlib.pyplot as plt
+import torch
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.append(str(PROJECT_ROOT))
