@@ -1,6 +1,9 @@
 import logging
+import random  # <--- Nieuw
 from typing import Any, Dict
 
+import numpy as np # <--- Nieuw
+import torch       # <--- Nieuw
 import yaml
 
 
@@ -26,5 +29,12 @@ def load_config(path: str) -> Dict[str, Any]:
 
 def seed_everything(seed: int):
     """Ensures reproducibility across numpy, random, and torch."""
-    # TODO: Set seeds for random, numpy, torch, and cuda
-    pass
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)  # Voor multi-GPU setups
+
+    # Zorgt voor deterministisch gedrag op CUDA (trager, maar reproduceerbaar)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
