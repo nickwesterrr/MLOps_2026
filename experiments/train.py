@@ -1,57 +1,76 @@
 import argparse
-
+from pathlib import Path  # <--- Added for handling paths
 import torch
 import torch.optim as optim
 
 from ml_core.data import get_dataloaders
 from ml_core.models import MLP
 from ml_core.solver import Trainer
-from ml_core.utils import load_config
+from ml_core.utils import load_config, seed_everything
 
 # logger = setup_logger("Experiment_Runner")
 
-
 def main(args):
-    # 1. Load Config & Set Seed
-    config = load_config(args.config)
+# 1. Load Config
+config = load_config(args.config)
 
-    # 2. Setup Device
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"Using device: {device}")
+# --- REPRODUCIBILITY START ---
+seed = config.get("seed", 42)
+seed_everything(seed)
+print(f"Global Random Seed set to: {seed}")
+# --- REPRODUCIBILITY END ---
 
-    # 3. Data
-    train_loader, val_loader = get_dataloaders(config)
+# 2. Setup Device
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"Using device: {device}")
 
-    # 4. Model
-    model = MLP(
-        input_shape=config["data"]["input_shape"],
-        hidden_units=config["model"]["hidden_units"],
-        dropout_rate=config["model"]["dropout_rate"],
-        num_classes=config["model"]["num_classes"],
-    )
+# 3. Data
+train_loader, val_loader = get_dataloaders(config)
 
-    # 5. Optimizer
-    optimizer = optim.SGD(
-        model.parameters(),
-        lr=config["training"]["learning_rate"],
-    )
+# 4. Model
+model = MLP(
+    input_shape=config["data"]["input_shape"],
+    hidden_units=config["model"]["hidden_units"],
+    dropout_rate=config["model"]["dropout_rate"],
+    num_classes=config["model"]["num_classes"],
+)
 
-    # 6. Trainer & Fit
-    trainer = Trainer(
-        model=model,
-        optimizer=optimizer,
-        config=config,
-        device=device,
-    )
-    
-    trainer.fit(train_loader, val_loader)
+# 5. Optimizer (Dynamic Implementation for Q3)
+lr = config["training"]["learning_rate"]
+opt_name = config["training"].get("optimizer", "sgd").lower()
 
-    torch.save(trainer.tracker, "trainer_tracker.pt")
-    
+if opt_name == "adam":
+    optimizer = optim.Adam(model.parameters(), lr=lr)
+elif opt_name == "sgd":
+    optimizer = optim.SGD(model.parameters(), lr=lr)
+else:
+    raise ValueError(f"Unsupported optimizer type in config: {opt_name}")
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Train a Simple MLP on PCAM")
-    parser.add_argument("--config", type=str, required=True, help="Path to config yaml")
-    args = parser.parse_args()
+print(f"Initialized optimizer: {opt_name} with lr: {lr}")
 
-    main(args)
+# 6. Trainer & Fit
+trainer = Trainer(
+    model=model,
+    optimizer=optimizer,
+    config=config,
+    device=device,
+)
+
+trainer.fit(train_loader, val_loader)
+
+# 7. Save Results (Dynamic Implementation for Q3)
+# Use the save_dir and experiment_name from config
+save_dir = Path(config["training"]["save_dir"])
+save_dir.mkdir(parents=True, exist_ok=True)
+
+exp_name = config.get("experiment_name", "experiment")
+save_path = save_dir / f"{exp_name}_tracker.pt"
+
+torch.save(trainer.tracker, save_path)
+print(f"Saved experiment results to: {save_path}")
+
+if name == "main":
+	parser = argparse.ArgumentParser(description="Train a Simple MLP on PCAM")
+	parser.add_argument("--config", type=str, required=True, help="Path to config yaml")
+	args = parser.parse_args()
+	main(args)
