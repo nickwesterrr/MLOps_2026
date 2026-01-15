@@ -4,10 +4,10 @@ seed: 42
 data:
   dataset_type: "pcam"
   # TODO: download the dataset and set the relative path here
-  data_path: "/scratch-shared/scur2282/data/"
+  data_path: "./data/"
   input_shape: [3, 96, 96]
   batch_size: 128
-  num_workers: 1
+  num_workers: 2
 
 model:
   hidden_units: [512, 256] # Iets groter gemaakt voor beter resultaat
