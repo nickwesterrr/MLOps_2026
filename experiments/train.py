@@ -1,14 +1,14 @@
 import argparse
-from pathlib import Path  # <--- Added for handling paths
+from pathlib import Path
 import torch
+import os
+import torch.nn as nn  # <--- Nodig voor CrossEntropyLoss
 import torch.optim as optim
 
 from ml_core.data import get_dataloaders
 from ml_core.models import MLP
 from ml_core.solver import Trainer
 from ml_core.utils import load_config, seed_everything
-
-# logger = setup_logger("Experiment_Runner")
 
 def main(args):
     # 1. Load Config
@@ -48,18 +48,25 @@ def main(args):
 
     print(f"Initialized optimizer: {opt_name} with lr: {lr}")
 
-    # 6. Trainer & Fit
+    # 6. Loss Function (Criterion) <--- NIEUW: Toegevoegd
+    criterion = nn.CrossEntropyLoss()
+
+    # 7. Trainer Setup <--- AANGEPAST: Loaders en criterion hier meegeven
     trainer = Trainer(
         model=model,
         optimizer=optimizer,
+        train_loader=train_loader, # Toegevoegd aan init
+        val_loader=val_loader,     # Toegevoegd aan init
+        criterion=criterion,       # Toegevoegd aan init
         config=config,
         device=device,
     )
 
-    trainer.fit(train_loader, val_loader)
+    # 8. Start Training <--- AANGEPAST: Geen argumenten meer (zitten nu in self)
+    # Als dit nog steeds fout gaat, check dan src/ml_core/solver.py hoe fit() eruit ziet.
+    trainer.fit()
 
-    # 7. Save Results (Dynamic Implementation for Q3)
-    # Use the save_dir and experiment_name from config
+    # 9. Save Results
     save_dir = Path(config["training"]["save_dir"])
     save_dir.mkdir(parents=True, exist_ok=True)
 
@@ -69,8 +76,8 @@ def main(args):
     torch.save(trainer.tracker, save_path)
     print(f"Saved experiment results to: {save_path}")
 
-if name == "main":
-	parser = argparse.ArgumentParser(description="Train a Simple MLP on PCAM")
-	parser.add_argument("--config", type=str, required=True, help="Path to config yaml")
-	args = parser.parse_args()
-	main(args)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Train a Simple MLP on PCAM")
+    parser.add_argument("--config", type=str, required=True, help="Path to config yaml")
+    args = parser.parse_args()
+    main(args)
