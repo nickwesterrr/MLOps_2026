@@ -1,6 +1,7 @@
 import argparse
 from pathlib import Path
 import torch
+import os
 import torch.nn as nn  # <--- Nodig voor CrossEntropyLoss
 import torch.optim as optim
 
@@ -18,6 +19,22 @@ def main(args):
     seed_everything(seed)
     print(f"Global Random Seed set to: {seed}")
     # --- REPRODUCIBILITY END ---
+
+    # ======================================================
+    # STAP 2: AUTOMATICALLY USE LOCAL SCRATCH IF AVAILABLE
+    # ======================================================
+    if "TMPDIR" in os.environ:
+        # Construct the path to where the .sh script copied the data
+        local_path = Path(os.environ["TMPDIR"]) / "pcam"
+        
+        # Verify the data is actually there
+        if local_path.exists() and any(local_path.iterdir()):
+            print(f"🚀 SPEED BOOST: Switching data path to Local Scratch: {local_path}")
+            # Override the slow path from config.yaml with the fast local path
+            config["data"]["data_path"] = str(local_path)
+        else:
+            print("⚠️ WARNING: TMPDIR detected but no data found. Did the copy in .sh fail?")
+    # ======================================================
 
     # 2. Setup Device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

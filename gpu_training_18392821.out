@@ -1,0 +1,15 @@
+------------------------------------------------
+Starting data copy to Local Scratch (/scratch-local/scur2282.18392821)...
+Data copy finished. Files in /scratch-local/scur2282.18392821/pcam:
+total 18G
+-rw-------. 1 scur2282 scur2282 865M Jan 15 20:36 camelyonpatch_level_2_split_test_x.h5
+-rw-------. 1 scur2282 scur2282  17G Jan 15 20:37 camelyonpatch_level_2_split_train_x.h5
+-rw-------. 1 scur2282 scur2282 156K Jan 15 20:37 camelyonpatch_level_2_split_train_y.h5
+-rw-------. 1 scur2282 scur2282 865M Jan 15 20:37 camelyonpatch_level_2_split_valid_x.h5
+-rw-------. 1 scur2282 scur2282  34K Jan 15 20:37 camelyonpatch_level_2_split_valid_y.h5
+------------------------------------------------
+Running on host: gcn63.local.snellius.surf.nl
+Global Random Seed set to: 42
+🚀 SPEED BOOST: Switching data path to Local Scratch: /scratch-local/scur2282.18392821/pcam
+Using device: cuda
+Initialized optimizer: adam with lr: 0.001
