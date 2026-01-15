@@ -35,7 +35,7 @@ def main(args):
         num_classes=config["model"]["num_classes"],
     )
 
-    # 5. Optimizer
+    # 5. Optimizer (Dynamic Implementation for Q3)
     lr = config["training"]["learning_rate"]
     opt_name = config["training"].get("optimizer", "sgd").lower()
 
