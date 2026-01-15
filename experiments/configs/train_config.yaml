@@ -4,18 +4,18 @@ seed: 42
 data:
   dataset_type: "pcam"
   # TODO: download the dataset and set the relative path here
-  data_path: "./data/pcam" 
+  data_path: "/scratch-shared/scur2282/data/"
   input_shape: [3, 96, 96]
-  batch_size: 32
-  num_workers: 2
+  batch_size: 128
+  num_workers: 1
 
 model:
-  hidden_units: [64, 32]
+  hidden_units: [512, 256] # Iets groter gemaakt voor beter resultaat
   dropout_rate: 0.2
   num_classes: 2
 
 training:
-  epochs: 5
+  epochs: 3
   learning_rate: 0.001
   log_after_steps: 10
   optimizer: "adam"  # <--- Changed to Adam (better than SGD for this)

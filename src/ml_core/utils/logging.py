@@ -34,5 +34,5 @@ def seed_everything(seed: int):
     torch.cuda.manual_seed_all(seed)  # Voor multi-GPU setups
 
     # Zorgt voor deterministisch gedrag op CUDA (trager, maar reproduceerbaar)
-    torch.backends.cudnn.deterministic = True
-    torch.backends.cudnn.benchmark = False
+    torch.backends.cudnn.deterministic = False
+    torch.backends.cudnn.benchmark = True
