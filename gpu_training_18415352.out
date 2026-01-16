@@ -1,0 +1,12 @@
+PWD=/gpfs/home2/scur2265/MLOps_2026
+VENV_PY=/gpfs/home2/scur2265/MLOps_2026/.venv/bin/python
+PY_EXE= /gpfs/home2/scur2265/MLOps_2026/.venv/bin/python
+NUMPY= 2.0.2 FROM /gpfs/home2/scur2265/MLOps_2026/.venv/lib64/python3.9/site-packages/numpy/__init__.py
+Global Random Seed set to: 42
+Using device: cuda
+Initialized optimizer: adam with lr: 0.001
+Starting training for 3 epochs on cuda...
+Epoch [1/3] - Train Loss: 0.5989, Val Loss: 0.5480
+Epoch [2/3] - Train Loss: 0.4972, Val Loss: 0.5684
+Epoch [3/3] - Train Loss: 0.4541, Val Loss: 0.6625
+Saved experiment results to: experiments/results/pcam_mlp_baseline_tracker.pt

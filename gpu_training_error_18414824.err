@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/gpfs/home2/scur2265/MLOps_2026/experiments/train.py", line 83, in <module>
+    main(args)
+  File "/gpfs/home2/scur2265/MLOps_2026/experiments/train.py", line 28, in main
+    train_loader, val_loader = get_dataloaders(config)
+  File "/gpfs/home2/scur2265/MLOps_2026/src/ml_core/data/loader.py", line 61, in get_dataloaders
+    train_ds = PCAMDataset(
+  File "/gpfs/home2/scur2265/MLOps_2026/src/ml_core/data/pcam.py", line 31, in __init__
+    raise FileNotFoundError(f"Files not found: {self.x_path}, {self.y_path}")
+FileNotFoundError: Files not found: data/camelyonpatch_level_2_split_train_x.h5, data/camelyonpatch_level_2_split_train_y.h5

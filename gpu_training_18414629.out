@@ -1,0 +1,3 @@
+PWD=/gpfs/home2/scur2265/MLOps_2026
+WHICH_PYTHON=/sw/arch/RHEL9/EB_production/2025/software/Python/3.13.1-GCCcore-14.2.0/bin/python
+PY_EXE= /sw/arch/RHEL9/EB_production/2025/software/Python/3.13.1-GCCcore-14.2.0/bin/python

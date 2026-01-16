@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/gpfs/home2/scur2265/MLOps_2026/experiments/train.py", line 10, in <module>
+    from ml_core.solver import Trainer
+  File "/gpfs/home2/scur2265/MLOps_2026/src/ml_core/solver/__init__.py", line 1, in <module>
+    from .trainer import Trainer
+  File "/gpfs/home2/scur2265/MLOps_2026/src/ml_core/solver/trainer.py", line 1, in <module>
+    cat <<EOF > src/ml_core/solver/trainer.py
+NameError: name 'cat' is not defined
