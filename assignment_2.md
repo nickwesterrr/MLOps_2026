@@ -2,10 +2,10 @@
 **MLOps & ML Programming (2026)**
 
 ## Group Information
-* **Group Number:** [Your Group Number]
-* **Team Members:** [Member 1 Name/ID, Member 2 Name/ID, Member 3 Name/ID, Member 4 Name/ID, Member 5 Name/ID]
-* **GitHub Repository:** [Link to your Group Repository]
-* **Base Setup Chosen from Assignment 1:** [Name of the group member whose repo was used as the foundation]
+* **Group Number:** 40
+* **Team Members:** [Hanna Daorah (15565823), Leonardo Sabatini (15781542), Nick Wester (STUDENTNUMMER!!), Wouter van de Scheur (STUDENTNUMMER!!), Amine Belhaj (STUDENTNUMMER!!!!)]
+* **GitHub Repository:** https://github.com/nickwesterrr/MLOps_2026
+* **Base Setup Chosen from Assignment 1:** [Nick Wester]
 
 ---
 
