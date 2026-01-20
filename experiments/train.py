@@ -1,8 +1,8 @@
 import argparse
+import json
 from pathlib import Path
 
 import torch
-import torch.nn as nn
 import torch.optim as optim
 
 from ml_core.data import get_dataloaders
@@ -59,15 +59,29 @@ def main(args):
     # 8) Fit expects loaders as args (per jouw Trainer.fit(train_loader, val_loader))
     trainer.fit(train_loader, val_loader)
 
-    # 9) Save tracker
+    # 9) Save outputs
     save_dir = Path(config["training"].get("save_dir", "experiments/results"))
     save_dir.mkdir(parents=True, exist_ok=True)
 
     exp_name = config.get("experiment_name", "experiment")
-    save_path = save_dir / f"{exp_name}_tracker.pt"
 
-    torch.save(trainer.tracker, save_path)
-    print(f"Saved experiment results to: {save_path}")
+    # 9a) Save tracker as .pt
+    pt_path = save_dir / f"{exp_name}_tracker.pt"
+    torch.save(trainer.tracker, pt_path)
+    print(f"Saved experiment results to: {pt_path}")
+
+    # 9b) Save history as .json (exactly what the assignment expects)
+    # Ensure JSON-serializable floats
+    history = {
+        "train_loss": [float(x) for x in trainer.tracker.get("train_loss", [])],
+        "val_loss": [float(x) for x in trainer.tracker.get("val_loss", [])],
+    }
+
+    json_path = save_dir / f"{exp_name}_history.json"
+    with open(json_path, "w", encoding="utf-8") as f:
+        json.dump(history, f, indent=2)
+
+    print(f"Saved history to: {json_path}")
 
 
 if __name__ == "__main__":

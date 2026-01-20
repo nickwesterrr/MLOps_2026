@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=MLOps_Train
-#SBATCH --output=gpu_training_%j.out
-#SBATCH --error=gpu_training_error_%j.err
+#SBATCH --output=experiments/results/gpu_training_%j.out
+#SBATCH --error=experiments/results/gpu_training_error_%j.err
 #SBATCH --time=01:00:00
 #SBATCH --partition=gpu_course
 #SBATCH --gpus=1

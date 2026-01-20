@@ -1,6 +1,0 @@
-PWD=/gpfs/home2/scur2265/MLOps_2026
-VENV_PY=/gpfs/home2/scur2265/MLOps_2026/.venv/bin/python
-PY_EXE= /gpfs/home2/scur2265/MLOps_2026/.venv/bin/python
-NUMPY= 2.0.2 FROM /gpfs/home2/scur2265/MLOps_2026/.venv/lib64/python3.9/site-packages/numpy/__init__.py
-Global Random Seed set to: 42
-Using device: cuda

@@ -1,5 +1,0 @@
-Traceback (most recent call last):
-  File "<string>", line 1, in <module>
-    import numpy as np; print('NUMPY=', np.__version__, 'FROM', np.__file__)
-    ^^^^^^^^^^^^^^^^^^
-ModuleNotFoundError: No module named 'numpy'
