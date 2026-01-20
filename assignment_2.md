@@ -345,8 +345,13 @@
 ## Question 4: Gradients & LR Scheduler
 1. **Internal Dynamics:**
 
+    - Plotting the global gradient norm with step-level granularity reveals high variance and "noise" between individual batches, which indicates significant instability in the training dynamics that would be hidden if only epoch-level averages were used. The gradient spikes observed, particularly during the initial steps, suggest the presence of outliers or "poisoned" data points in the PCAM dataset which cause sudden and extreme updates to the model weights
+
 2. **Learning Rate Scheduling:**
 
+    - We chose the StepLR scheduler. It decays the learning rate by a factor of gamma=0.1 every step_size=2 epochs. (look at train_config.yaml)
+
+    - Reducing the learning rate in the final stages of training is essential because it allows the optimizer to take smaller, more precise steps, which prevents the weights from "overshooting" or oscillating around the local minimum and enables the model to settle accurately into the deepest part of the loss valley
 ---
 
 ## Question 5: Part 1 - Experiment Tracking

@@ -22,4 +22,4 @@ export PYTHONPATH=$PYTHONPATH:$(pwd)/src
 
 # 4. Run Python
 # The python script will detect TMPDIR automatically (see Step 2)
-python experiments/train.py --config experiments/configs/train_config.yaml
+python experiments/train.py --config experiments/configs/train_config_seed43.yaml
