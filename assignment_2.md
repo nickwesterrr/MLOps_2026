@@ -3,7 +3,7 @@
 
 ## Group Information
 * **Group Number:** 40
-* **Team Members:** [Hanna Daorah (15565823), Leonardo Sabatini (15781542), Nick Wester (STUDENTNUMMER!!), Wouter van de Scheur (STUDENTNUMMER!!), Amine Belhaj (STUDENTNUMMER!!!!)]
+* **Team Members:** [Hanna Daorah (15565823), Leonardo Sabatini (15781542), Nick Wester (15757579), Wouter van de Scheur (14611953), Amine Belhaj (14933632)]
 * **GitHub Repository:** https://github.com/nickwesterrr/MLOps_2026
 * **Base Setup Chosen from Assignment 1:** [Nick Wester]
 
