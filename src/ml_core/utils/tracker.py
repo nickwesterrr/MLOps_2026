@@ -3,6 +3,8 @@ from pathlib import Path
 from typing import Any, Dict
 
 # TODO: Add TensorBoard Support
+from torch.utils.tensorboard import SummaryWriter
+import yaml
 
 
 class ExperimentTracker:
@@ -16,6 +18,10 @@ class ExperimentTracker:
         self.run_dir.mkdir(parents=True, exist_ok=True)
 
         # TODO: Save config to yaml in run_dir
+        with open(self.run_dir / "config.yaml", "w") as f:
+            yaml.dump(config, f)
+
+        self.writer = SummaryWriter(log_dir=str(self.run_dir))
 
         # Initialize CSV
         self.csv_path = self.run_dir / "metrics.csv"
@@ -23,20 +29,33 @@ class ExperimentTracker:
         self.csv_writer = csv.writer(self.csv_file)
 
         # Header (TODO: add the rest of things we want to track, loss, gradients, accuracy etc.)
-        self.csv_writer.writerow(["epoch"])
+        self.metrics_keys = [
+            "train_loss",
+            "val_loss",
+            "val_accuracy",
+            "val_f2_score",
+            "val_roc_auc",
+            "grad_norm",
+            "lr"
+            ]
+        self.csv_writer.writerow(["epoch"] + self.metrics_keys)
 
     def log_metrics(self, epoch: int, metrics: Dict[str, float]):
         """
         Writes metrics to CSV (and TensorBoard).
         """
         # TODO: Write other useful metrics to CSV
-        self.csv_writer.writerow([epoch])  # Currently only logging epoch
+        row = [epoch] + [metrics.get(k, 0.0) for k in self.metrics_keys]
+        self.csv_writer.writerow(row)
         self.csv_file.flush()
 
         # TODO: Log to TensorBoard
+        for key, value in metrics.items():
+            self.writer.add_scalar(key, value, epoch)
 
     def get_checkpoint_path(self, filename: str) -> str:
         return str(self.run_dir / filename)
 
     def close(self):
         self.csv_file.close()
+        self.writer.close()
