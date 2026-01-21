@@ -7,8 +7,8 @@ import numpy as np
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.append(str(PROJECT_ROOT))
 
-from ml_core.data.loader import get_dataloaders
-from ml_core.utils import load_config
+from ml_core.data.loader import get_dataloaders  # noqa: E402
+from ml_core.utils import load_config  # noqa: E402
 
 
 def main():
