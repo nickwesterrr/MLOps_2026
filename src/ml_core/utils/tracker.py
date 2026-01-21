@@ -31,6 +31,13 @@ class ExperimentTracker:
         except Exception:
             self.git_hash = "Not a git repository"
         
+        # Add Hash to Config
+        config["git_commit"] = self.git_hash
+
+        # Save Config to yaml
+        with open(self.run_dir / "config.yaml", "w") as f:
+            yaml.dump(config, f)
+
         # Log environment info
         with open(self.run_dir / "requirements.txt", "w") as f:
             f.write(subprocess.check_output([sys.executable, "-m", "pip", "freeze"]).decode())
@@ -73,6 +80,15 @@ class ExperimentTracker:
     def get_checkpoint_path(self, filename: str) -> str:
         return str(self.run_dir / filename)
 
-    def close(self):
+    def close(self, final_metrics: Dict[str, float] = None):
+        if final_metrics:
+            hparam_dict = {
+                "hparam/lr": self.config["training"]["learning_rate"],
+                "hparam/batch_size": self.config["data"]["batch_size"],
+                "hparam/optimizer": self.config["training"]["optimizer"],
+            }
+
+            self.writer.add_hparams(hparam_dict, final_metrics)
+
         self.csv_file.close()
         self.writer.close()

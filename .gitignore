@@ -1,6 +1,6 @@
 __pycache__/
 *.pyc
-experiments/logs/
+logs/
 experiments/results/
 .env
 .DS_Store

@@ -194,5 +194,12 @@ class Trainer:
             self.save_checkpoint(epoch, val_loss)
         
         self.save_history()
+
         if self.tracker_obj:
-            self.tracker_obj.close()
+            final_results = {
+                "metric/val_f2": self.tracker["val_f2_score"][-1],
+                "metric/val_roc_auc": self.tracker["val_roc_auc"][-1],
+                "metric/val_accuracy": self.tracker["val_accuracy"][-1],
+            }
+
+            self.tracker_obj.close(final_metrics=final_results)
