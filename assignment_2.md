@@ -255,10 +255,13 @@
 
 4. **Twin Run Results:**
 
-> [!IMPORTANT]
-> DIT MOET NOG GEDAAN WORDEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    - [Amine](assets/plots/question_1.4_amine)
+    - [Hanna](assets/plots/question-1.4-hanna)
+    - [Leonardo](assets/plots/question-1.4-Leonardo)
 
+    - No, we did not obtain identical results. While all three runs exhibit the same general overfitting trend (decreasing training loss but increasing validation loss), the specific numerical values differ, with the final validation loss varying between approximately $0.63$ and $0.67$ across the different runs. This discrepancy indicates that sources of non-determinism remain, likely due to differences in hardware floating-point precision (non-deterministic CUDA operations) or unseeded randomness in the data loading process across our different user environments.
 
+    - 2 group members (Wouter and Nick) were not able to train the model for this particular question. We encountered many issues in virtual environment dependencies and their versions. We spent a lot of time to resolve these issues to finally get the training to work, however this did not succeed and we wanted to continue to the rest of the questions and thus we decided that Wouter and Nick could skip this question.
 ---
 
 ## Question 2: Data, Partitioning, and Leakage Audit
@@ -356,6 +359,7 @@
     - We chose the StepLR scheduler. It decays the learning rate by a factor of gamma=0.1 every step_size=2 epochs. (look at train_config.yaml)
 
     - Reducing the learning rate in the final stages of training is essential because it allows the optimizer to take smaller, more precise steps, which prevents the weights from "overshooting" or oscillating around the local minimum and enables the model to settle accurately into the deepest part of the loss valley
+
 ---
 
 ## Question 5: Part 1 - Experiment Tracking
