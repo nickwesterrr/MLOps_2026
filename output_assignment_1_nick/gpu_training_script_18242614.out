@@ -1,0 +1,7 @@
+Using device: cuda
+Traceback (most recent call last):
+  File "/home/scur2401/MLOps_2026/experiments/train.py", line 57, in <module>
+    main(args)
+  File "/home/scur2401/MLOps_2026/experiments/train.py", line 27, in main
+    input_shape=config["model"]["input_shape"],
+KeyError: 'input_shape'

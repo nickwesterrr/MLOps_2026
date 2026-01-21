@@ -9,7 +9,6 @@ tensorboard
 matplotlib
 seaborn
 pandas
-scikit-learn
 pytest
 ruff
 pre-commit

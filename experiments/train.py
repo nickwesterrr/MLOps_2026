@@ -9,7 +9,6 @@ from ml_core.data import get_dataloaders
 from ml_core.models import MLP
 from ml_core.solver import Trainer
 from ml_core.utils import load_config, seed_everything
-from ml_core.utils.tracker import ExperimentTracker
 
 def main(args):
     # 1. Load Config
@@ -52,9 +51,6 @@ def main(args):
     # 6. Loss Function (Criterion) <--- NIEUW: Toegevoegd
     criterion = nn.CrossEntropyLoss()
 
-    exp_name = config.get("experiment_name", "experiment")
-    tracker = ExperimentTracker(experiment_name=exp_name, config=config)
-
     # 7. Trainer Setup <--- AANGEPAST: Loaders en criterion hier meegeven
     trainer = Trainer(
         model=model,
@@ -64,7 +60,6 @@ def main(args):
         criterion=criterion,       # Toegevoegd aan init
         config=config,
         device=device,
-        tracker=tracker,
     )
 
     # 8. Start Training <--- AANGEPAST: Geen argumenten meer (zitten nu in self)
@@ -72,7 +67,14 @@ def main(args):
     trainer.fit()
 
     # 9. Save Results
-    print(f"Training complete. Saving results in: {tracker.run_dir}")
+    save_dir = Path(config["training"]["save_dir"])
+    save_dir.mkdir(parents=True, exist_ok=True)
+
+    exp_name = config.get("experiment_name", "experiment")
+    save_path = save_dir / f"{exp_name}_tracker.pt"
+
+    torch.save(trainer.tracker, save_path)
+    print(f"Saved experiment results to: {save_path}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train a Simple MLP on PCAM")

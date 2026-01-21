@@ -1,0 +1,7 @@
+Using device: cuda
+Starting training for 5 epochs...
+Epoch [1/5] - Train Loss: 0.6109, Val Loss: 0.5789
+Epoch [2/5] - Train Loss: 0.5581, Val Loss: 0.5756
+Epoch [3/5] - Train Loss: 0.5332, Val Loss: 0.5504
+Epoch [4/5] - Train Loss: 0.5149, Val Loss: 0.5803
+Epoch [5/5] - Train Loss: 0.4971, Val Loss: 0.5658
