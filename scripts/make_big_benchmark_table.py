@@ -27,7 +27,7 @@ import glob
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional, List
+from typing import List, Optional
 
 
 @dataclass
@@ -81,12 +81,18 @@ def parse_out_file(path: Path) -> Row:
 
     elapsed_s = _find_float(r"^Elapsed \(s\)\s*:\s*(" + _RE_FLOAT + r")\b", txt)
     total_images = _find_int(r"^Total images\s*:\s*(\d+)\b", txt)
-    throughput = _find_float(r"^Throughput\s*:\s*(" + _RE_FLOAT + r")\s*images/sec\b", txt)
+    throughput = _find_float(
+        r"^Throughput\s*:\s*(" + _RE_FLOAT + r")\s*images/sec\b", txt
+    )
 
     gpu_name = _find_str(r"^GPU name\s*:\s*(.+)$", txt)
 
-    vram_max_alloc_mb = _find_float(r"^VRAM max alloc\s*:\s*(" + _RE_FLOAT + r")\s*MB\b", txt)
-    vram_max_reserved_mb = _find_float(r"^VRAM max reserv\s*:\s*(" + _RE_FLOAT + r")\s*MB\b", txt)
+    vram_max_alloc_mb = _find_float(
+        r"^VRAM max alloc\s*:\s*(" + _RE_FLOAT + r")\s*MB\b", txt
+    )
+    vram_max_reserved_mb = _find_float(
+        r"^VRAM max reserv\s*:\s*(" + _RE_FLOAT + r")\s*MB\b", txt
+    )
 
     # Detect explicit error line
     error = _find_str(r"^ERROR\s*:\s*(.+)$", txt)
@@ -154,8 +160,12 @@ def to_markdown(rows: List[Row], title: str) -> str:
         )
 
     # Metadata footer
-    model_params = next((r.model_params for r in rows_sorted if r.model_params is not None), None)
-    model_size_mb = next((r.model_size_mb for r in rows_sorted if r.model_size_mb is not None), None)
+    model_params = next(
+        (r.model_params for r in rows_sorted if r.model_params is not None), None
+    )
+    model_size_mb = next(
+        (r.model_size_mb for r in rows_sorted if r.model_size_mb is not None), None
+    )
     gpu_name = next((r.gpu_name for r in rows_sorted if r.gpu_name is not None), None)
 
     md.append("")
@@ -163,7 +173,9 @@ def to_markdown(rows: List[Row], title: str) -> str:
     md.append("")
     md.append(f"- Model params: {model_params if model_params is not None else 'N/A'}")
     md.append(
-        f"- Model size (fp32 params only): {model_size_mb:.2f} MB" if model_size_mb is not None else "- Model size: N/A"
+        f"- Model size (fp32 params only): {model_size_mb:.2f} MB"
+        if model_size_mb is not None
+        else "- Model size: N/A"
     )
     md.append(f"- GPU: {gpu_name if gpu_name is not None else 'N/A'}")
     md.append("")
