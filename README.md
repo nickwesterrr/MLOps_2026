@@ -1,63 +1,137 @@
-# MLOps UvA Bachelor AI Course: Medical Image Classification Skeleton Code
+# MLOps 2026 – PCAM MLP (Reproducible Training & Inference)
 
-![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)
-![Build Status](https://github.com/yourusername/mlops_course/actions/workflows/ci.yml/badge.svg)
-![Code Style: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)
-
-A repo exemplifying **MLOps best practices**: modularity, reproducibility, automation, and experiment tracking.
-
-This project implements a standardized workflow for training neural networks on medical data (PCAM/TCGA). 
-
-The idea is that you fill in the repository with the necessary functions so you can execute the ```train.py``` function. Please also fill in this ```README.md``` clearly to setup, install and run your code. 
-
-Don't forget to setup CI and linting!
+This repository contains a small MLP pipeline for PatchCamelyon (PCAM) binary classification, with reproducible training and a pinned checkpoint for quick inference.
 
 ---
 
-## 🚀 Quick Start
+## Installation
 
-### 1. Installation
-Clone the repository and set up your isolated environment.
-
+### Option A (recommended): install from `pyproject.toml`
 ```bash
-# 1. Create a virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+# From repo root
+python -m venv .venv
+source .venv/bin/activate
 
-# 2. Install the package in "Editable" mode
+# Install package + dependencies
 pip install -e .
-
-# 3. Install pre-commit hooks
-pre-commit install
 ```
 
-### 2. Verify Setup
+### Option B: install from `requirements.txt`
 ```bash
-pytest tests/
+# From repo root
+python -m venv .venv
+source .venv/bin/activate
+
+pip install -r requirements.txt
+pip install -e .
 ```
 
-### 3. Run an Experiment
+### Verify setup
+```bash
+pytest -q
+```
+
+---
+
+## Data setup
+
+The default training config expects the dataset at:
+- `data_path: "./data/"` (see `experiments/configs/train_config.yaml`)
+
+1) Create the folder:
+```bash
+mkdir -p data
+```
+
+2) Place (or symlink) the PCAM H5 files into `./data/` with the exact filenames below:
+- `camelyonpatch_level_2_split_train_x.h5`
+- `camelyonpatch_level_2_split_train_y.h5`
+- `camelyonpatch_level_2_split_valid_x.h5`
+- `camelyonpatch_level_2_split_valid_y.h5`
+
+(Optional, if you later run explicit test evaluation)
+- `camelyonpatch_level_2_split_test_x.h5`
+- `camelyonpatch_level_2_split_test_y.h5`
+
+---
+
+## Training
+
+Train the model using the provided configuration:
+
 ```bash
 python experiments/train.py --config experiments/configs/train_config.yaml
 ```
 
+Outputs (logs/checkpoints) are written under:
+- `./experiments/results/`
+
 ---
 
-## 📂 Project Structure
+## Expected performance
 
-```text
-.
-├── src/ml_core/          # The Source Code (Library)
-│   ├── data/             # Data loaders and transformations
-│   ├── models/           # PyTorch model architectures
-│   ├── solver/           # Trainer class and loops
-│   └── utils/            # Loggers and experiment trackers
-├── experiments/          # The Laboratory
-│   ├── configs/          # YAML files for hyperparameters
-│   ├── results/          # Checkpoints and logs (Auto-generated)
-│   └── train.py          # Entry point for training
-├── scripts/              # Helper scripts (plotting, etc)
-├── tests/                # Unit tests for QA
-├── pyproject.toml        # Config for Tools (Ruff, Pytest)
-└── setup.py              # Package installation script
+Champion checkpoint for Q9 is committed to:
+- `checkpoints/best_model.pt`
+
+### Inference proof (example)
+Running inference on one validation batch (first 5 samples) produced:
+- True labels: `[1 1 1 1 1]`
+- Predictions: `[1 1 1 1 1]`
+- Tumor probabilities: `[0.94037294 0.50822943 0.81582975 0.8192233  0.75301254]`
+- Matches in first 5: `5/5`
+- Runtime: ~13.6s
+
+### Validation/Test metrics (fill in)
+Add the final metrics once your team finalizes them (from your experiment tracking logs):
+- Validation: Acc = <...>, F2 = <...>, ROC-AUC = <...>, Loss = <...>
+- Test: Acc = <...>, F2 = <...>, ROC-AUC = <...>, Loss = <...>
+
+---
+
+## Inference
+
+Inference entrypoint:
+- `scripts/inference.py`
+
+Pinned checkpoint:
+- `checkpoints/best_model.pt`
+
+Run inference (loads the checkpoint, builds the model from the YAML config, and prints predictions/probabilities for a few validation samples):
+
+```bash
+python scripts/inference.py checkpoints/best_model.pt experiments/configs/train_config.yaml
 ```
+
+---
+
+## Offline handover (USB checklist)
+
+If a teammate needs to run this on a cluster with no internet access, copy these files/folders:
+
+Required:
+- `checkpoints/best_model.pt` (pinned checkpoint)
+- `scripts/inference.py` (inference entrypoint)
+- `experiments/configs/train_config.yaml` (exact configuration used)
+- `src/ml_core/` (all Python source code for the `ml_core` package)
+- `pyproject.toml` and/or `requirements.txt` (dependency list)
+- `data/` containing the PCAM `.h5` files with the exact filenames listed above
+
+Recommended (for full reproducibility / retraining evidence):
+- `experiments/train.py` (training entrypoint)
+- Any logs/checkpoints you want to preserve under `experiments/results/`
+
+If there is no internet access, also bring one of:
+- A prebuilt environment (e.g., a copied `.venv` if compatible with the target system), or
+- Offline Python wheels for all dependencies (a “wheelhouse”), matching the target Python version/OS.
+
+---
+
+## Repository structure (key locations)
+
+- `src/ml_core/` – core library (data, models, solver, utils)
+- `experiments/train.py` – training entrypoint
+- `experiments/configs/` – YAML configs
+- `experiments/results/` – training outputs (logs/checkpoints)
+- `scripts/inference.py` – inference entrypoint
+- `checkpoints/best_model.pt` – pinned model checkpoint
+- `tests/` – unit tests
