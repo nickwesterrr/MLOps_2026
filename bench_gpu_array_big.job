@@ -20,7 +20,7 @@ module load 2025
 module load Python/3.13.1-GCCcore-14.2.0
 module load CUDA/12.8.0
 
-source ../.venv/bin/activate
+source .venv/bin/activate
 
 BATCH_SIZES=(8 16 32 64 128 256 512)
 BS=${BATCH_SIZES[$SLURM_ARRAY_TASK_ID]}

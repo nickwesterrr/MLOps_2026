@@ -17,7 +17,7 @@ module load 2025
 
 
 # CUDA-enabled venv
-source ../.venv/bin/activate
+source .venv/bin/activate
 
 # Batch sizes (7 stuks: >= 6 vereist)
 BATCH_SIZES=(8 16 32 64 128 256 512)
