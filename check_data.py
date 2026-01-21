@@ -1,10 +1,12 @@
-import h5py
-import numpy as np
 from pathlib import Path
+
+import h5py
 import yaml
 
 # Laad config om het pad te vinden
-with open("experiments/configs/train_config.yaml", "r") as f: # Pas pad aan als je config anders heet
+with open(
+    "experiments/configs/train_config.yaml", "r"
+) as f:  # Pas pad aan als je config anders heet
     config = yaml.safe_load(f)
 
 base_path = Path(config["data"]["data_path"])
@@ -21,12 +23,14 @@ for name, p in files.items():
     if p.exists():
         with h5py.File(p, "r") as f:
             # We nemen aan dat de dataset keys 'x' of 'y' heten
-            key = 'x' if 'x' in str(p) else 'y'
+            key = "x" if "x" in str(p) else "y"
             dset = f[key]
-            
+
             # Bereken grootte in GB
             size_gb = p.stat().st_size / (1024**3)
-            
-            print(f"{name:<10} | {str(dset.shape):<20} | {str(dset.dtype):<10} | {size_gb:.2f}")
+
+            print(
+                f"{name:<10} | {str(dset.shape):<20} | {str(dset.dtype):<10} | {size_gb:.2f}"
+            )
     else:
         print(f"{name:<10} | NOT FOUND")

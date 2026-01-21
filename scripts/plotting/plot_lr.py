@@ -1,14 +1,24 @@
 import argparse
 import json
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import seaborn as sns
-from pathlib import Path
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Plot Learning Rate Schedule")
-    parser.add_argument("--file", type=Path, required=True, help="Path to a history.json file")
-    parser.add_argument("--output", type=Path, default="assets/plots/q4_learning_rate.png", help="Output path")
+    parser.add_argument(
+        "--file", type=Path, required=True, help="Path to a history.json file"
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default="assets/plots/q4_learning_rate.png",
+        help="Output path",
+    )
     return parser.parse_args()
+
 
 def main():
     args = parse_args()
@@ -29,7 +39,7 @@ def main():
     epochs = range(1, len(lrs) + 1)
 
     plt.figure(figsize=(8, 5))
-    plt.plot(epochs, lrs, marker='o', linestyle='-', color='orange', linewidth=2)
+    plt.plot(epochs, lrs, marker="o", linestyle="-", color="orange", linewidth=2)
     plt.title("Learning Rate Schedule (StepLR)")
     plt.xlabel("Epoch")
     plt.ylabel("Learning Rate")
@@ -40,6 +50,7 @@ def main():
     args.output.parent.mkdir(parents=True, exist_ok=True)
     plt.savefig(args.output, dpi=300)
     print(f"Plot saved to: {args.output}")
+
 
 if __name__ == "__main__":
     main()

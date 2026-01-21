@@ -20,10 +20,12 @@ def setup_logger(name: str = "MLOps_Course") -> logging.Logger:
         logger.addHandler(handler)
     return logger
 
+
 def load_config(path: str) -> Dict[str, Any]:
     """Safely loads a yaml configuration file."""
     with open(path, "r") as f:
         return yaml.safe_load(f)
+
 
 def seed_everything(seed: int):
     """Ensures reproducibility across numpy, random, and torch."""

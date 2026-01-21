@@ -1,12 +1,13 @@
 import csv
-from pathlib import Path
+import subprocess
 import sys
+from pathlib import Path
 from typing import Any, Dict
+
+import yaml
 
 # TODO: Add TensorBoard Support
 from torch.utils.tensorboard import SummaryWriter
-import yaml
-import subprocess
 
 
 class ExperimentTracker:
@@ -25,12 +26,12 @@ class ExperimentTracker:
 
         # Log git commit hash
         try:
-            self.git_hash = subprocess.check_output(
-                ["git", "rev-parse", "HEAD"]
-            ).decode().strip()
+            self.git_hash = (
+                subprocess.check_output(["git", "rev-parse", "HEAD"]).decode().strip()
+            )
         except Exception:
             self.git_hash = "Not a git repository"
-        
+
         # Add Hash to Config
         config["git_commit"] = self.git_hash
 
@@ -40,12 +41,16 @@ class ExperimentTracker:
 
         # Log environment info
         with open(self.run_dir / "requirements.txt", "w") as f:
-            f.write(subprocess.check_output([sys.executable, "-m", "pip", "freeze"]).decode())
+            f.write(
+                subprocess.check_output(
+                    [sys.executable, "-m", "pip", "freeze"]
+                ).decode()
+            )
 
         # Initialize TensorBoard Writer
         self.writer = SummaryWriter(log_dir=str(self.run_dir))
         self.writer.add_text("Git Commit Hash", self.git_hash)
-        self.writer.add_text("Config", str(config))         
+        self.writer.add_text("Config", str(config))
 
         # Initialize CSV
         self.csv_path = self.run_dir / "metrics.csv"
@@ -54,14 +59,14 @@ class ExperimentTracker:
 
         # Header (TODO: add the rest of things we want to track, loss, gradients, accuracy etc.)
         self.metrics_keys = [
-                "train_loss",
-                "val_loss",
-                "val_accuracy",
-                "val_f2_score",
-                "val_roc_auc",
-                "grad_norm",
-                "lr"
-            ]
+            "train_loss",
+            "val_loss",
+            "val_accuracy",
+            "val_f2_score",
+            "val_roc_auc",
+            "grad_norm",
+            "lr",
+        ]
         self.csv_writer.writerow(["epoch"] + self.metrics_keys)
 
     def log_metrics(self, epoch: int, metrics: Dict[str, float]):

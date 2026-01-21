@@ -19,7 +19,7 @@ def main():
 
     output_dir = PROJECT_ROOT / "assets" / "plots"
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # CLass Balance
     labels_seen = []
 
@@ -49,7 +49,7 @@ def main():
         x_denorm = (x * 0.5) + 0.5
         batch_means = x_denorm.mean(dim=[1, 2, 3]).numpy()
         image_means.extend(batch_means)
-    
+
     image_means = np.array(image_means) * 255
 
     plt.figure(figsize=(7, 5))
@@ -62,7 +62,7 @@ def main():
 
     plt.axvline(0, color="red", linestyle="--", label="Black threshold")
     plt.axvline(255, color="red", linestyle="--", label="White threshold")
-    
+
     plt.xlabel("Mean Pixel Value (0-255)")
     plt.ylabel("Count")
     plt.title("Distribution of Image Mean Intensities (All Images)")

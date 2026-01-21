@@ -13,14 +13,14 @@ class MLP(nn.Module):
         dropout_rate: float = 0.2,
     ):
         super().__init__()
-        
+
         # TODO: Build the MLP architecture
         # If you are up to the task, explore other architectures or model types
         # Hint: Flatten -> [Linear -> ReLU -> Dropout] * N_layers -> Linear
         input_dim = 1
         for d in input_shape:
             input_dim *= d
-        
+
         hidden_dim1, hidden_dim2 = hidden_units
 
         self.net = nn.Sequential(
@@ -33,7 +33,6 @@ class MLP(nn.Module):
             nn.Dropout(dropout_rate),
             nn.Linear(hidden_dim2, num_classes),
         )
-        
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         # TODO: Implement forward pass
