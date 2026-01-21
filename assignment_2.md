@@ -437,16 +437,39 @@
 ---
 
 ## Question 9: Documentation & README
-1. **README Link:** [Link to your Group Repo README]
-2. **README Sections:** [Confirm Installation, Data Setup, Training, and Inference are present.]
-3. **Offline Handover:** [List the files required on a USB stick to run the model offline.]
+
+1. **README Link:** https://github.com/nickwesterrr/MLOps_2026/blob/main/README.md
+
+2. **README Sections:**
+   - **Installation:** Includes clear steps to create a virtual environment and install dependencies (e.g., `python -m venv .venv`, `source .venv/bin/activate`, `pip install -e .`).
+   - **Data Setup:** Explains that the PCAM H5 files must be placed under `./data/` (because `data_path: "./data/"` in the config) and lists the required filenames.
+   - **Training:** Provides the exact command and config to reproduce the run: 
+     ```bash
+     python experiments/train.py --config experiments/configs/train_config.yaml
+     ```  
+     Also states what validation/test performance to expect (validation/test metrics should be filled in with your final champion numbers once confirmed).
+   - **Inference:** Provides the exact command to run a single prediction demo using the saved checkpoint: 
+     ```bash
+     python scripts/inference.py checkpoints/best_model.pt experiments/configs/train_config.yaml
+     ```  
+     The script loads the checkpoint and runs inference on validation samples, printing predictions and tumor probabilities.
+
+3. **Offline Handover:** Files/info needed on a USB stick to run the model offline (no internet): 
+   - `checkpoints/best_model.pt` (the saved best model checkpoint committed to the repo).
+   - `scripts/inference.py` (inference entrypoint).
+   - `experiments/configs/train_config.yaml` (exact config/hyperparameters used).
+   - `src/ml_core/` (all source code required to import `ml_core` and run).
+   - `pyproject.toml` and/or `requirements.txt` (dependency list).
+   - PCAM dataset H5 files in the expected `./data/` folder with the exact filenames specified in the README.
+   - A ready-to-use environment for the target cluster (either a compatible pre-built `.venv` or an offline wheelhouse of Python packages), since there is no internet to install dependencies.
+
 
 ---
 
 ## Final Submission Checklist
-- [ ] Group repository link provided?
-- [ ] Best model checkpoint pushed to GitHub?
-- [ ] inference.py script included and functional?
+- [X] Group repository link provided?
+- [X] Best model checkpoint pushed to GitHub?
+- [X] inference.py script included and functional?
 - [ ] All Slurm scripts included in the repository?
 - [ ] All images use relative paths (assets/)?
-- [ ] Names and IDs of all members on the first page?
+- [X] Names and IDs of all members on the first page?

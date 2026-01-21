@@ -81,10 +81,6 @@ Running inference on one validation batch (first 5 samples) produced:
 - Matches in first 5: `5/5`
 - Runtime: ~13.6s
 
-### Validation/Test metrics (fill in)
-Add the final metrics once your team finalizes them (from your experiment tracking logs):
-- Validation: Acc = <...>, F2 = <...>, ROC-AUC = <...>, Loss = <...>
-- Test: Acc = <...>, F2 = <...>, ROC-AUC = <...>, Loss = <...>
 
 ---
 
