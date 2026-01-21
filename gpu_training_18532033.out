@@ -1,0 +1,20 @@
+Global Random Seed set to: 42
+Using device: cuda
+Initialized optimizer: adam with lr: 0.001
+Starting training for 5 epochs on cuda...
+Val Metrics: Acc: 0.7122 | F2: 0.6465 | ROC-AUC: 0.8091
+Epoch [1/5] - LR: 0.001000 - Train Loss: 0.5989, Val Loss: 0.5480
+Saved checkpoint: experiments/results/pcam_mlp_baseline/checkpoint_epoch_1.pt
+Val Metrics: Acc: 0.7360 | F2: 0.6946 | ROC-AUC: 0.8023
+Epoch [2/5] - LR: 0.001000 - Train Loss: 0.4972, Val Loss: 0.5684
+Saved checkpoint: experiments/results/pcam_mlp_baseline/checkpoint_epoch_2.pt
+Val Metrics: Acc: 0.7243 | F2: 0.6265 | ROC-AUC: 0.7875
+Epoch [3/5] - LR: 0.000100 - Train Loss: 0.4255, Val Loss: 0.6240
+Saved checkpoint: experiments/results/pcam_mlp_baseline/checkpoint_epoch_3.pt
+Val Metrics: Acc: 0.7151 | F2: 0.6015 | ROC-AUC: 0.7760
+Epoch [4/5] - LR: 0.000100 - Train Loss: 0.3862, Val Loss: 0.7180
+Saved checkpoint: experiments/results/pcam_mlp_baseline/checkpoint_epoch_4.pt
+Val Metrics: Acc: 0.7145 | F2: 0.5945 | ROC-AUC: 0.7805
+Epoch [5/5] - LR: 0.000010 - Train Loss: 0.3586, Val Loss: 0.7211
+Saved checkpoint: experiments/results/pcam_mlp_baseline/checkpoint_epoch_5.pt
+Training complete. Saving results in: experiments/results/pcam_mlp_baseline

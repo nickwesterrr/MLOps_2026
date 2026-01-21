@@ -72,14 +72,7 @@ def main(args):
     trainer.fit()
 
     # 9. Save Results
-    save_dir = Path(config["training"]["save_dir"])
-    save_dir.mkdir(parents=True, exist_ok=True)
-
-    exp_name = config.get("experiment_name", "experiment")
-    save_path = save_dir / f"{exp_name}_tracker.pt"
-
-    torch.save(trainer.tracker, save_path)
-    print(f"Saved experiment results to: {save_path}")
+    print(f"Training complete. Saving results in: {tracker.run_dir}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train a Simple MLP on PCAM")

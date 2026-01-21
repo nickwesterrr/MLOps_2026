@@ -19,6 +19,7 @@ dependencies = [
     "tqdm",
     "pyyaml",
     "python-dotenv",
+    "scikit-learn",
     # Dev tools are often listed here or in optional-dependencies
     "pytest",
     "ruff",

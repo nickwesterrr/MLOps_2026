@@ -1,10 +1,12 @@
 import csv
 from pathlib import Path
+import sys
 from typing import Any, Dict
 
 # TODO: Add TensorBoard Support
 from torch.utils.tensorboard import SummaryWriter
 import yaml
+import subprocess
 
 
 class ExperimentTracker:
@@ -21,7 +23,22 @@ class ExperimentTracker:
         with open(self.run_dir / "config.yaml", "w") as f:
             yaml.dump(config, f)
 
+        # Log git commit hash
+        try:
+            self.git_hash = subprocess.check_output(
+                ["git", "rev-parse", "HEAD"]
+            ).decode().strip()
+        except Exception:
+            self.git_hash = "Not a git repository"
+        
+        # Log environment info
+        with open(self.run_dir / "requirements.txt", "w") as f:
+            f.write(subprocess.check_output([sys.executable, "-m", "pip", "freeze"]).decode())
+
+        # Initialize TensorBoard Writer
         self.writer = SummaryWriter(log_dir=str(self.run_dir))
+        self.writer.add_text("Git Commit Hash", self.git_hash)
+        self.writer.add_text("Config", str(config))         
 
         # Initialize CSV
         self.csv_path = self.run_dir / "metrics.csv"
@@ -30,13 +47,13 @@ class ExperimentTracker:
 
         # Header (TODO: add the rest of things we want to track, loss, gradients, accuracy etc.)
         self.metrics_keys = [
-            "train_loss",
-            "val_loss",
-            "val_accuracy",
-            "val_f2_score",
-            "val_roc_auc",
-            "grad_norm",
-            "lr"
+                "train_loss",
+                "val_loss",
+                "val_accuracy",
+                "val_f2_score",
+                "val_roc_auc",
+                "grad_norm",
+                "lr"
             ]
         self.csv_writer.writerow(["epoch"] + self.metrics_keys)
 

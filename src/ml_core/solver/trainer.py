@@ -4,6 +4,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from pathlib import Path
 import json
+import numpy as np
 from sklearn.metrics import roc_auc_score, fbeta_score, accuracy_score
 from ml_core.utils.tracker import ExperimentTracker
 
@@ -191,3 +192,5 @@ class Trainer:
             self.save_checkpoint(epoch, val_loss)
         
         self.save_history()
+        if self.tracker_obj:
+            self.tracker_obj.close()
