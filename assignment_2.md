@@ -685,10 +685,14 @@
 ---
 
 ## Question 7: Team Collaboration and CI/CD
-1. **Consolidation Strategy:** 
+1. **Consolidation Strategy:**
+    We selected the most complete repository within the group as the foundation for the assignment. This was Nick’s repository, as it already contained a working project structure, configuration files, and an initial CI setup that aligned with the assignment requirements. During the early stages, we reused parts of the code from Hanna’s repository, since certain features were already implemented there and could be integrated into the main codebase. Instead of using Git-based approaches such as git merge or git cherry-pick, this code was manually ported into the foundation repository. This choice was made because the repositories had different structures and histories, and manually integrating the relevant components reduced the risk of complex merge conflicts or importing unrelated changes. After selecting the foundation repository, Nick added the other team members as collaborators. From that point onward, all development was carried out within the same group repository.
+
 2. **Collaborative Flow:**
+    Due to time constraints, our group was not able to complete this question. A significant amount of time was spent diagnosing and attempting to resolve CI errors in the GitHub Actions pipeline.
 
 3. **CI Audit:**
+    We explicitly install PyTorch from the CPU-only index because GitHub Actions runners do not support CUDA, which avoids installation and runtime errors. Using a GPU-enabled installation would likely fail due to missing CUDA dependencies. CI protects against breaking changes by running checks on pull requests and blocking merges when these checks fail.
 
 4. **Merge Conflict Resolution:**
 
