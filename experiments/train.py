@@ -82,7 +82,6 @@ def main(args):
     )
 
     # 8. Start Training <--- AANGEPAST: Geen argumenten meer (zitten nu in self)
-    # Als dit nog steeds fout gaat, check dan src/ml_core/solver.py hoe fit() eruit ziet.
     trainer.fit()
 
     # 9. Save Results
