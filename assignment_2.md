@@ -613,9 +613,53 @@
 ## Question 6: Model Slicing & Error Analysis
 1. **Visual Error Patterns:**
 
+    - ![False Negatives](assets/plots/question-6/q6_false_negatives.png) 
+    - ![False Positives](assets/plots/question-6/q6_false_positives.png)
+    - ```cmd
+        (.venv) scur2282@int6:~/MLOps_2026$ python scripts/error_analysis_q6.py     --checkpoint experiments/results/run_q4/seed42/checkpoint_epoch_5.pt     --config experiments/results/run_q4/seed42/config.yaml     --output_dir assets/plots
+        Loading model from experiments/results/run_q4/seed42/checkpoint_epoch_5.pt...
+        Running inference on validation set...
+        Total samples analyzed: 32768
+        Found 2104 False Positives
+        Found 7250 False Negatives
+        Saved q6_false_positives.png
+        Saved q6_false_negatives.png
+
+        --- Slicing Analysis ---
+        Global Performance:  Acc: 0.7145 | F2: 0.5945
+        Dark Slice (N=21434):  Acc: 0.6855 | F2: 0.6297
+        Bright Slice (N=2411): Acc: 0.9925 | F2: 0.0000
+        Saved q6_slice_histogram.png
+      ```
+
+    - **False Negatives (7250 counts):** This is the model's biggest weakness. As seen in q6_false_negatives.png, the model frequently misses tumors in images that are extremely dark, low-contrast, or contain artifacts (blurry spots, black blobs). The pixel intensity for these errors is often very low (e.g. -0.04), indicating the model struggles to see tumor structures in dense or poorly stained slides.
+    - **False Positives (2104 counts):** As seen in q6_false_positives.png, the model tends to hallucinate tumors in healthy tissue that is dense and "busy". These tiles contain a lot of cells (high texture) which mimics the appearance of tumor tissue, confusing the model.
+
 2. **The "Slice":**
 
+    - We defined our data slices based on Mean Pixel Intensity, as histograms showed a bimodal distribution distinguishing between "Tissue" (Dark) and "Background/Fat" (Bright).
+        - ![Mean Pixel Intensity](assets/plots/question-6/q6_slice_histogram.png)
+
+    - **Slice Definition:**
+        - Dark Slice: Mean Intensity < 0.35 (Represents dense tissue and artifacts)
+        - Bright Slice: Mean Intensity > 0.75 (Represents empty glass, fat, or background)
+
+    - ## Performance Comparison
+        | Slice                      | Sample Count (N) | Accuracy | F2-Score |
+        |----------------------------|------------------|----------|----------|
+        | Global                     | 32,768           | 71.45%   | 0.5945   |
+        | Dark Slice (Tissue)        | 21,434           | 68.55%   | 0.6297   |
+        | Bright Slice (Background)  | 2,411            | 99.25%   | 0.0000*  |
+    
+    - The model performs nearly perfectly on the Bright Slice (99.25% Accuracy), which is expected as empty slides are easy to classify as "Healthy". However, the performance drops to 68.55% on the Dark Slice, which contains the actual tissue.
+
+    - ***Note: F2-Score is 0.00 on the Bright slice likely because there were no positive tumor samples in that slice to begin with, or the model correctly predicted 0 positives. We had not enough time to figure this out by creating a different script or manually checking this; which is why we do not have a full explanation to this***
+
 3. **Risks of Silent Failure:**
+
+    - If this model were deployed, monitoring only the Global Accuracy (71.45%) would be dangerous because it masks the underlying failure modes
+        - **Inflation by Easy Samples:** The global score is inflated by the easy "Bright" samples. If the dataset distribution shifts to include more empty slides, the Global Accuracy would go up, even if the model gets worse at detecting cancer
+        - **Clinical Risk:** The model is least reliable exactly where it matters most -> on the dense tissue (Dark Slice). A pathologist relies on the model to flag suspicious tissue, but the model misses tumors in dark/dense areas (High False Negatives). Relying on global metrics would hide this critical blind spot.
 
 ---
 
