@@ -390,12 +390,33 @@
 
 ## Question 5: Part 2 - Hyperparameter Optimization
 1. **Search Space:**
+    * **Hyperparameters**: A grid search was performed over 18 combinations of Learning Rate $\{0.001, 0.0001, 1e-05\}$, Batch Size $\{32, 64, 128\}$, and Optimizer type $\{\text{Adam, SGD}\}$.
+    * We chose these hyperparameters because they each have a significant impact on how the model performs. Lower learning rates can lead to more stable convergence and smaller batch sizes can lead to better generalization. The optimizer effects how the loss function is minimized.
+
 2. **Visualization:**
+    A Parallel Coordinates Plot was generated in TensorBoard to visualize the relationships between parameters and metrics.
+
+    ![TensorBoard Visualization](assets/plots/tensorboard-visualisation.png)
+
 3. **The "Champion" Model:**
+    * **Selected Run**: sweep_lr0.0001_bs32_optsgd
+    * **Hyperparameters**:
+        - Learning Rate: 0.0001
+        - Batch Size: 32
+        - Optimizer: SGD
+    * **Performance**:
+        - Validation F2-Score: 0.82504
+    * **Confusion Matrix**:
+    ![Confusion Matrix](assets/plots/confusion_matrix_champion.png)
 
 4. **Thresholding Logic:**
 
+    ![PR Curve](assets/plots/pr_curve_champion.png)
+    The 0.5 threshold would not be appropiate in this clinical context, because in the confusion matrix we can see that there were 1682 false negatives, which means that a lot of times the model failed to detect the tumor. Therefore we need to prioritize recall over precision. Lowering the threshold would increase the recall and minimize the false negatives. However, in the PR curve, we can see that when the recall increases, the precision decreases. That is the cost of prioritizing recall.
+
 5. **Baseline Comparison:**
+
+    A simple baseline model that always predicts the majority class achieves an accuracy of approximately 50%. Our champion model achieved a validation accuracy of 67.87% and an F2-score of 0.825. Our systematic MLOps search improved the accuracy by 17.87% and significantly improved the F2-score.
 
 ---
 
