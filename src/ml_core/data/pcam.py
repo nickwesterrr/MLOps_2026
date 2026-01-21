@@ -39,6 +39,22 @@ class PCAMDataset(Dataset):
         # maar voor nu gaan we ervan uit dat we alle data gebruiken.
         # (Filtering is traag om vooraf te doen op 150k images zonder index file)
         self.indices = list(range(self.dataset_len))
+        if filter_data:
+            kept = []
+            with h5py.File(self.x_path, "r") as f:
+                x = f["x"]
+
+                for i in range(self.dataset_len):
+                    img = x[i]
+                    m = float(np.nan_to_num(img, nan=0.0).mean())
+
+                    is_black = (m <= 1.0) or (m <= 0.01)
+                    is_white = (m >= 254.0) or (m >= 0.99)
+
+                    if not (is_black or is_white):
+                        kept.append(i)
+
+            self.indices = kept
 
     def __len__(self) -> int:
         return len(self.indices)
