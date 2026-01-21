@@ -4,7 +4,6 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from pathlib import Path
 import json
-from sklearn.metrics import roc_auc_score, fbeta_score, accuracy_score
 
 class Trainer:
     def __init__(
@@ -31,11 +30,7 @@ class Trainer:
             "val_loss": [],
             "train_loss_per_step": [],
             "grad_norms": [],
-            "learning_rates": [],
-            # New Metrics
-            "val_accuracy": [],
-            "val_f2_score": [],
-            "val_roc_auc": []
+            "learning_rates": []
         }
 
         # --- Q4: Scheduler ---
@@ -84,43 +79,12 @@ class Trainer:
         self.model.eval()
         total_loss = 0.0
         n_batches = 0
-
-        # storage for metrics
-        all_preds = []
-        all_probs = []
-        all_labels = []
-
         for x, y in self.val_loader:
             x, y = x.to(self.device), y.to(self.device)
             output = self.model(x)
             loss = self.criterion(output, y)
             total_loss += loss.item()
             n_batches += 1
-
-            # Get probabilities and predictions
-            probs = torch.softmax(output, dim=1)[:, 1] # Probability of class 1 (Tumor)
-            preds = torch.argmax(output, dim=1)
-            
-            all_probs.extend(probs.cpu().numpy())
-            all_preds.extend(preds.cpu().numpy())
-            all_labels.extend(y.cpu().numpy())
-
-            # Calculate Metrics using Sklearn
-            acc = accuracy_score(all_labels, all_preds)
-            # F2 Score: weights recall higher than precision (beta=2)
-            f2 = fbeta_score(all_labels, all_preds, beta=2.0, zero_division=0)
-            try:
-                roc = roc_auc_score(all_labels, all_probs)
-            except ValueError:
-                roc = 0.0 # Handle case with only one class in batch
-
-            # Log to tracker
-            self.tracker["val_accuracy"].append(acc)
-            self.tracker["val_f2_score"].append(f2)
-            self.tracker["val_roc_auc"].append(roc)
-        
-        print(f"   >> Val Metrics: Acc: {acc:.4f} | F2: {f2:.4f} | ROC-AUC: {roc:.4f}")
-
         return total_loss / n_batches if n_batches > 0 else 0.0
 
     def save_checkpoint(self, epoch: int, val_loss: float) -> None:
@@ -132,18 +96,13 @@ class Trainer:
             "model_state_dict": self.model.state_dict(),
             "optimizer_state_dict": self.optimizer.state_dict(),
             "val_loss": val_loss,
-            "config": self.config,
-            "tracker": self.tracker # Save metrics inside checkpoint too
+            "config": self.config
         }
         torch.save(checkpoint, filename)
 
     def save_history(self) -> None:
         save_dir = Path(self.config["training"]["save_dir"])
         save_dir.mkdir(parents=True, exist_ok=True)
-        # Convert numpy floats to python floats for JSON serialization
-        def convert(o):
-            if isinstance(o, np.float32): return float(o)
-            raise TypeError
         with open(save_dir / "history.json", "w") as f:
             json.dump(self.tracker, f, indent=4)
 
