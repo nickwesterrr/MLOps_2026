@@ -365,6 +365,11 @@
 ## Question 5: Part 1 - Experiment Tracking
 1. **Metrics Choice:**
 
+    - **Primary Metric:** F2-Score (F-Beta with β = 2)
+        - **Reason:** In medical diagnosis, False Negatives (missing cancer) are much worse than False Positives (unnecessary biopsy). We chose β=2 (F2-Score) to weigh Recall twice as heavily as Precision.
+    - **Secondary Metric:** ROC-AUC (Area Under Receiver Operating Characteristic).
+        - **Reason:** It shows how well the model separates classes regardless of the classification threshold.
+
 2. **Results (Average of 3 Seeds):**
 
 3. **Logging Scalability:**
