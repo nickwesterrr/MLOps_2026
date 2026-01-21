@@ -89,7 +89,6 @@ class Trainer:
     def validate(self, epoch_idx: int) -> float:
         self.model.eval()
         total_loss = 0.0
-        n_batches = 0
 
         # storage for metrics
         all_preds = []
