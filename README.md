@@ -122,12 +122,21 @@ If there is no internet access, also bring one of:
 
 ---
 
-## Repository structure (key locations)
+## 📂 Project Structure
 
-- `src/ml_core/` – core library (data, models, solver, utils)
-- `experiments/train.py` – training entrypoint
-- `experiments/configs/` – YAML configs
-- `experiments/results/` – training outputs (logs/checkpoints)
-- `scripts/inference.py` – inference entrypoint
-- `checkpoints/best_model.pt` – pinned model checkpoint
-- `tests/` – unit tests
+```text
+.
+├── src/ml_core/          # The Source Code (Library)
+│   ├── data/             # Data loaders and transformations
+│   ├── models/           # PyTorch model architectures
+│   ├── solver/           # Trainer class and loops
+│   └── utils/            # Loggers and experiment trackers
+├── experiments/          # The Laboratory
+│   ├── configs/          # YAML files for hyperparameters
+│   ├── results/          # Checkpoints and logs (Auto-generated)
+│   └── train.py          # Entry point for training
+├── scripts/              # Helper scripts (plotting, etc)
+├── tests/                # Unit tests for QA
+├── pyproject.toml        # Config for Tools (Ruff, Pytest)
+└── setup.py              # Package installation script
+```
