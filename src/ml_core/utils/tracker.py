@@ -73,6 +73,15 @@ class ExperimentTracker:
     def get_checkpoint_path(self, filename: str) -> str:
         return str(self.run_dir / filename)
 
-    def close(self):
+    def close(self, final_metrics: Dict[str, float] = None):
+        if final_metrics:
+            hparam_dict = {
+                "hparam/lr": self.config["training"]["learning_rate"],
+                "hparam/batch_size": self.config["data"]["batch_size"],
+                "hparam/optimizer": self.config["training"]["optimizer"],
+            }
+
+            self.writer.add_hparams(hparam_dict, final_metrics)
+
         self.csv_file.close()
         self.writer.close()

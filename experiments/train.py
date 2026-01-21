@@ -15,6 +15,20 @@ def main(args):
     # 1. Load Config
     config = load_config(args.config)
 
+    # Override config with command-line args if provided
+    if args.lr:
+        config["training"]["learning_rate"] = args.lr
+    if args.batch_size:
+        config["data"]["batch_size"] = args.batch_size
+    if args.optimizer:
+        config["training"]["optimizer"] = args.optimizer
+    
+    # Dynamically set experiment name based on hyperparameters
+    lr_val = config["training"]["learning_rate"]
+    bs_val = config["data"]["batch_size"]
+    opt_val = config["training"]["optimizer"]
+    config["experiment_name"] = f"sweep_lr{lr_val}_bs{bs_val}_opt{opt_val}"
+
     # --- REPRODUCIBILITY START ---
     seed = config.get("seed")
     seed_everything(seed)
@@ -78,5 +92,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train a Simple MLP on PCAM")
     parser.add_argument("--config", type=str, required=True, help="Path to config yaml")
     parser.add_argument("--seed", type=int, default=None, help="Override random seed")
+
+    # Hyperparameter overrides for grid search
+    parser.add_argument("--lr", type=float, help="Override learning rate")
+    parser.add_argument("--batch_size", type=int, help="Override batch size")
+    parser.add_argument("--optimizer", type=str, choices=["adam", "sgd"], help="Override optimizer")
+
     args = parser.parse_args()
     main(args)
