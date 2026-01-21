@@ -27,7 +27,7 @@ import csv
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional, List
+from typing import List, Optional
 
 
 @dataclass
@@ -73,7 +73,9 @@ def parse_out(path: Path) -> Row:
 
     total_images = _find_int(r"^Total images\s*:\s*(\d+)\b", txt)
     elapsed_s = _find_float(r"^Elapsed \(s\)\s*:\s*(" + _RE_FLOAT + r")\b", txt)
-    throughput = _find_float(r"^Throughput\s*:\s*(" + _RE_FLOAT + r")\s*images/sec\b", txt)
+    throughput = _find_float(
+        r"^Throughput\s*:\s*(" + _RE_FLOAT + r")\s*images/sec\b", txt
+    )
 
     gpu_name = _find_str(r"^GPU name\s*:\s*(.+)$", txt)
 
@@ -124,24 +126,36 @@ def to_markdown(rows: List[Row], title: str) -> str:
     lines.append("")
     lines.append("Generated from Slurm `.out` files.")
     lines.append("")
-    lines.append("| Batch size | Throughput (img/s) | Elapsed (s) | Total images | Error |")
-    lines.append("|-----------:|-------------------:|------------:|------------:|:------|")
+    lines.append(
+        "| Batch size | Throughput (img/s) | Elapsed (s) | Total images | Error |"
+    )
+    lines.append(
+        "|-----------:|-------------------:|------------:|------------:|:------|"
+    )
 
     for r in rows:
         lines.append(
             f"| {fmt_i(r.batch_size)} | {fmt_f(r.throughput, 2)} | {fmt_f(r.elapsed_s, 4)} | {fmt_i(r.total_images)} | {r.error or ''} |"
         )
 
-    model_params = next((r.model_params for r in rows if r.model_params is not None), None)
-    model_size_mb = next((r.model_size_mb for r in rows if r.model_size_mb is not None), None)
+    model_params = next(
+        (r.model_params for r in rows if r.model_params is not None), None
+    )
+    model_size_mb = next(
+        (r.model_size_mb for r in rows if r.model_size_mb is not None), None
+    )
     gpu_name = next((r.gpu_name for r in rows if r.gpu_name is not None), None)
 
     lines.append("")
     lines.append("## Metadata")
     lines.append("")
-    lines.append(f"- Model params: {model_params if model_params is not None else 'N/A'}")
     lines.append(
-        f"- Model size (fp32 params only): {model_size_mb:.2f} MB" if model_size_mb is not None else "- Model size: N/A"
+        f"- Model params: {model_params if model_params is not None else 'N/A'}"
+    )
+    lines.append(
+        f"- Model size (fp32 params only): {model_size_mb:.2f} MB"
+        if model_size_mb is not None
+        else "- Model size: N/A"
     )
     lines.append(f"- GPU: {gpu_name if gpu_name is not None else 'N/A'}")
     lines.append("")

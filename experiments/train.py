@@ -1,7 +1,6 @@
 import argparse
-from pathlib import Path
+
 import torch
-import os
 import torch.nn as nn  # <--- Nodig voor CrossEntropyLoss
 import torch.optim as optim
 
@@ -10,6 +9,7 @@ from ml_core.models import MLP
 from ml_core.solver import Trainer
 from ml_core.utils import load_config, seed_everything
 from ml_core.utils.tracker import ExperimentTracker
+
 
 def main(args):
     # 1. Load Config
@@ -22,7 +22,7 @@ def main(args):
         config["data"]["batch_size"] = args.batch_size
     if args.optimizer:
         config["training"]["optimizer"] = args.optimizer
-    
+
     # Dynamically set experiment name based on hyperparameters
     lr_val = config["training"]["learning_rate"]
     bs_val = config["data"]["batch_size"]
@@ -73,9 +73,9 @@ def main(args):
     trainer = Trainer(
         model=model,
         optimizer=optimizer,
-        train_loader=train_loader, # Toegevoegd aan init
-        val_loader=val_loader,     # Toegevoegd aan init
-        criterion=criterion,       # Toegevoegd aan init
+        train_loader=train_loader,  # Toegevoegd aan init
+        val_loader=val_loader,  # Toegevoegd aan init
+        criterion=criterion,  # Toegevoegd aan init
         config=config,
         device=device,
         tracker=tracker,
@@ -87,6 +87,7 @@ def main(args):
     # 9. Save Results
     print(f"Training complete. Saving results in: {tracker.run_dir}")
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train a Simple MLP on PCAM")
     parser.add_argument("--config", type=str, required=True, help="Path to config yaml")
@@ -95,7 +96,9 @@ if __name__ == "__main__":
     # Hyperparameter overrides for grid search
     parser.add_argument("--lr", type=float, help="Override learning rate")
     parser.add_argument("--batch_size", type=int, help="Override batch size")
-    parser.add_argument("--optimizer", type=str, choices=["adam", "sgd"], help="Override optimizer")
+    parser.add_argument(
+        "--optimizer", type=str, choices=["adam", "sgd"], help="Override optimizer"
+    )
 
     args = parser.parse_args()
     main(args)

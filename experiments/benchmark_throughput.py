@@ -5,8 +5,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import torch
-import torchvision.transforms as T
 import torchvision.models as models
+import torchvision.transforms as T
 
 
 @dataclass
@@ -20,7 +20,9 @@ class Result:
 
     @property
     def img_per_s(self) -> float:
-        return self.total_images / self.elapsed_s if self.elapsed_s > 0 else float("inf")
+        return (
+            self.total_images / self.elapsed_s if self.elapsed_s > 0 else float("inf")
+        )
 
 
 def count_params(model: torch.nn.Module) -> int:
@@ -78,7 +80,8 @@ def _is_cuda_oom(e: BaseException) -> bool:
     return (
         "out of memory" in msg
         or "cuda out of memory" in msg
-        or "cublas" in msg and "alloc" in msg
+        or "cublas" in msg
+        and "alloc" in msg
         or "cuda error: out of memory" in msg
     )
 
@@ -139,13 +142,21 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--batch_size", type=int, default=64)
     parser.add_argument("--num_workers", type=int, default=2)
-    parser.add_argument("--steps", type=int, default=200, help="Measured steps (batches).")
-    parser.add_argument("--warmup_steps", type=int, default=20, help="Warmup steps not counted.")
+    parser.add_argument(
+        "--steps", type=int, default=200, help="Measured steps (batches)."
+    )
+    parser.add_argument(
+        "--warmup_steps", type=int, default=20, help="Warmup steps not counted."
+    )
     parser.add_argument("--mode", choices=["dataloader", "forward"], default="forward")
     parser.add_argument("--split", choices=["train", "val", "test"], default="train")
     parser.add_argument("--device", choices=["cpu", "cuda"], default="cpu")
     parser.add_argument("--model", choices=["small", "big"], default="small")
-    parser.add_argument("--pin_memory", action="store_true", help="Useful for GPU transfers; harmless on CPU.")
+    parser.add_argument(
+        "--pin_memory",
+        action="store_true",
+        help="Useful for GPU transfers; harmless on CPU.",
+    )
     parser.add_argument("--prefetch_factor", type=int, default=2)
     parser.add_argument("--persistent_workers", action="store_true")
     parser.add_argument("--torch_threads", type=int, default=0)
@@ -158,7 +169,9 @@ def main():
     # Device
     if args.device == "cuda":
         if not torch.cuda.is_available():
-            raise RuntimeError("Requested --device cuda but torch.cuda.is_available() is False.")
+            raise RuntimeError(
+                "Requested --device cuda but torch.cuda.is_available() is False."
+            )
         device = torch.device("cuda")
     else:
         device = torch.device("cpu")

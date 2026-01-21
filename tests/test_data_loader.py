@@ -40,9 +40,9 @@ class TestPCAMPipeline:
         y_p = str(mock_data_dir / "camelyonpatch_level_2_split_train_y.h5")
         ds = PCAMDataset(x_p, y_p, filter_data=False)
         img, _ = ds[0]
-        assert (
-            img.max() <= 255
-        ), "Image values > 255 found. Did you forget to clip before uint8 cast?"
+        assert img.max() <= 255, (
+            "Image values > 255 found. Did you forget to clip before uint8 cast?"
+        )
 
     def test_heuristic_filtering(self, mock_data_dir):
         """Checks if mean-based filtering drops the black/white outlier samples."""
@@ -50,9 +50,9 @@ class TestPCAMPipeline:
         y_p = str(mock_data_dir / "camelyonpatch_level_2_split_train_y.h5")
         ds = PCAMDataset(x_p, y_p, filter_data=True)
         # Expected 98 because index 1 (mean 0) and 2 (mean 255) should be dropped
-        assert (
-            len(ds.indices) == 98
-        ), f"Filtering failed. Expected 98 samples, got {len(ds.indices)}"
+        assert len(ds.indices) == 98, (
+            f"Filtering failed. Expected 98 samples, got {len(ds.indices)}"
+        )
 
     def test_dataloader_output_logic(self, mock_data_dir):
         """Verifies shapes, types, and label squeezing."""
@@ -81,6 +81,6 @@ class TestPCAMPipeline:
         positives = (labels == 1).sum().item()
         # In a batch of 40 without sampling, we'd expect ~8 positives.
         # With balancing, we expect closer to 20.
-        assert (
-            positives > 12
-        ), f"WeightedSampler might not be working. Only {positives}/40 are class 1."
+        assert positives > 12, (
+            f"WeightedSampler might not be working. Only {positives}/40 are class 1."
+        )
