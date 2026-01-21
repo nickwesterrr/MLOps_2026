@@ -403,18 +403,94 @@
 
 ## Question 8: Benchmarking Infrastructure
 1. **Throughput Logic:**
+I measure throughput using a separate benchmarking script.
+
+Pros: Highly controlled measurements; no interference from backward passes, optimizer steps, logging, checkpoint saving, or validation.
+
+Cons: This does not represent true training throughput, since neither the backward pass nor the optimizer step is included.
+
+Operations that can interfere when measuring training throughput include:
+
+Checkpoint saving (disk I/O)
+
+Validation steps
+
+Per-step metrics collection and logging
+
+Progress bars
+
+Frequent print() statements
+
+Unintended CPU–GPU synchronization at suboptimal points
+
+
+pieces of code:
+
+# Synchronize GPU before starting timing
+if device.type == "cuda":
+    torch.cuda.synchronize()
+
+t0 = time.perf_counter()
+
+measured_steps = 0
+total_images = 0
+it = iter(loader)
+
+while measured_steps < args.steps:
+    x, _ = next(it)
+    bs = x.shape[0]
+
+    if args.mode == "forward":
+        x = x.to(device, non_blocking=True)
+        with torch.no_grad():
+            _ = model(x)
+
+    total_images += bs
+    measured_steps += 1
+
+# Synchronize GPU after finishing timing
+if device.type == "cuda":
+    torch.cuda.synchronize()
+
+t1 = time.perf_counter()
+
+throughput = total_images / (t1 - t0)
+
+Would precision affect throughput? Hypothesize why.
+
+Likely yes, throughput increases with lower precision (float16/bfloat16), especially on modern GPUs:
+
+Tensor Cores: GPUs such as the NVIDIA A100 have specialized hardware (Tensor Cores) that delivers much higher FLOP/s for FP16/BF16 than FP32 for many ops (e.g., convolutions, GEMMs). If your model uses these kernels, you often get a large speedup.
+
+Throughput suddenly worse on another day: one potential issue
+
+One common cause on HPC systems is a different software environment or module stack than last time, which can silently change performance.
+
+Example:
+
+You accidentally load a different CUDA / cuDNN / PyTorch build (or none at all), causing:
+
+fallback to less optimized kernels,
+
+different default settings (e.g., TF32 disabled),
+
+or even CPU fallback for parts of the pipeline.
+
+
 
 2. **Throughput Table (Batch Size 1):**
 
 | Partition | Node Type | Throughput (img/s) | Job ID |
 | :--- | :--- | :--- | :--- |
-| `thin_course` | CPU Only | | |
-| `gpu_course` | GPU ([Type]) | | |
+| `thin_course` | CPU Only |206.83 | 18543914|
+| `gpu_course` | GPU ([Type]) |334.22 |18543848 |
 
 3. **Scaling Analysis:**
+The throughput results for both the small and large model are shown in the corresponding tables. For both models, throughput increases with batch size, indicating improved GPU utilization. For the large model (ResNet-50), the increase in throughput becomes much smaller beyond batch size 256, showing that the GPU reaches a saturation point.
 
+No out-of-memory errors were encountered, even at the largest batch size (512). GPU memory usage measured with nvidia-smi shows that the large model uses approximately 1.1 GB of allocated VRAM (about 1.6 GB reserved), which is well below the ~5 GB available on the A100 MIG node. This explains why memory capacity is not a limiting factor and why performance is primarily limited by GPU compute rather than memory or I/O.
 4. **Bottleneck Identification:**
-
+Because our benchmark runs in forward mode under torch.no_grad(), there is no backward pass and thus no backward bottleneck. The throughput increases with batch size but shows diminishing returns, which suggests the pipeline becomes input-bound: HDF5 reading and DataLoader/CPU-side overhead (worker scheduling, host-to-device transfer) dominate rather than the GPU forward pass.
 ---
 
 ## Question 9: Documentation & README
