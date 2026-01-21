@@ -1,0 +1,8 @@
+batch_size,throughput_img_s,elapsed_s,total_images,vram_max_alloc_mb,vram_max_reserved_mb,model_params,model_size_mb,gpu_name,error,file
+8,844.36,0.4737,400,114.9,142.0,23512130,89.69,NVIDIA A100-SXM4-40GB MIG 1g.5gb,,/home/scur2265/MLOps_2026/experiments/results/question 8/model changes/big_job/array_big_18550012_0.out
+16,1052.27,0.7603,800,131.55,162.0,23512130,89.69,NVIDIA A100-SXM4-40GB MIG 1g.5gb,,/home/scur2265/MLOps_2026/experiments/results/question 8/model changes/big_job/array_big_18550012_1.out
+32,1184.65,1.3506,1600,160.93,196.0,23512130,89.69,NVIDIA A100-SXM4-40GB MIG 1g.5gb,,/home/scur2265/MLOps_2026/experiments/results/question 8/model changes/big_job/array_big_18550012_2.out
+64,1298.34,2.4647,3200,222.8,266.0,23512130,89.69,NVIDIA A100-SXM4-40GB MIG 1g.5gb,,/home/scur2265/MLOps_2026/experiments/results/question 8/model changes/big_job/array_big_18550012_3.out
+128,1642.73,3.896,6400,346.55,482.0,23512130,89.69,NVIDIA A100-SXM4-40GB MIG 1g.5gb,,/home/scur2265/MLOps_2026/experiments/results/question 8/model changes/big_job/array_big_18550012_4.out
+256,1699.95,7.5296,12800,595.05,870.0,23512130,89.69,NVIDIA A100-SXM4-40GB MIG 1g.5gb,,/home/scur2265/MLOps_2026/experiments/results/question 8/model changes/big_job/array_big_18550012_5.out
+512,1758.28,14.5597,25600,1089.05,1616.0,23512130,89.69,NVIDIA A100-SXM4-40GB MIG 1g.5gb,,/home/scur2265/MLOps_2026/experiments/results/question 8/model changes/big_job/array_big_18550012_6.out
