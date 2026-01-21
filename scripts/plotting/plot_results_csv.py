@@ -96,9 +96,7 @@ def plot_metrics(data: Dict[str, Any], output_path: Optional[Path]):
     axes[1, 0].set_ylabel("Loss")
 
     # --- Plot 4: Validation Metrics (Q5) ---
-    has_f2 = safe_plot(
-        axes[1, 1], data, "val_f2_score", "F2-Score", "green", marker="s"
-    )
+    safe_plot(axes[1, 1], data, "val_f2_score", "F2-Score", "green", marker="s")
     safe_plot(axes[1, 1], data, "val_accuracy", "Accuracy", "blue", linestyle="--")
     safe_plot(axes[1, 1], data, "val_roc_auc", "ROC-AUC", "red", linestyle="--")
 
