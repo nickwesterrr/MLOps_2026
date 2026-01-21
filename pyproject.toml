@@ -12,6 +12,7 @@ requires-python = ">=3.9"
 dependencies = [
     "numpy",
     "pandas",
+    "h5py",
     "torch",
     "torchvision",
     "tensorboard",
