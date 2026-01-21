@@ -12,6 +12,9 @@ requires-python = ">=3.9"
 dependencies = [
     "numpy",
     "h5py",
+    "matplotlib",
+    "seaborn",
+    "scikit-learn",
     "pandas",
     "torch",
     "torchvision",
@@ -19,7 +22,6 @@ dependencies = [
     "tqdm",
     "pyyaml",
     "python-dotenv",
-    "scikit-learn",
     # Dev tools are often listed here or in optional-dependencies
     "pytest",
     "ruff",

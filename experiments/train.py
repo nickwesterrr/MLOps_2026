@@ -16,7 +16,7 @@ def main(args):
     config = load_config(args.config)
 
     # --- REPRODUCIBILITY START ---
-    seed = config.get("seed", 42)
+    seed = config.get("seed")
     seed_everything(seed)
     print(f"Global Random Seed set to: {seed}")
     # --- REPRODUCIBILITY END ---
