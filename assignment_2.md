@@ -418,7 +418,7 @@
 
 5. **Evidence of Logging:**
 
-    - [config.yaml]
+    - [config.yaml-and-git-commit-hash]
     ```yaml
     data:
       batch_size: 128
@@ -430,13 +430,14 @@
       - 96
       num_workers: 2
     experiment_name: pcam_mlp_baseline
+    git_commit: f8773a5c919577140f9c4a214a3ca1c919816dda # <--- git commit hash!!
     model:
       dropout_rate: 0.2
       hidden_units:
       - 512
       - 256
       num_classes: 2
-    seed: 42
+    seed: 43
     training:
       epochs: 5
       gamma: 0.1
@@ -447,8 +448,6 @@
       scheduler: step
       step_size: 2
     ```
-
-    - [git-commit-hash]:
 
     - [requirements.txt]:
     ```txt
@@ -568,7 +567,14 @@
 
 6. **Reproduction & Checkpoint Usage:**
 
-
+    [run_q4/seed42]
+    - **Checkout Code:** Run git checkout <COMMIT_HASH> using the hash found in config.yaml.
+    - **Setup Environment:** Install dependencies via pip install -e .
+    - **Load Config:** Use the saved experiments/results/run_q5_hanna/config.yaml
+    - **Set Seed:** Ensure the seed in the config is set to 42.
+    - **Run:** Execute the training script:
+        - python experiments/train.py --config experiments/results/run_q5_hanna/config.yaml
+    - **Verify:** Compare the new history.json with the original to ensure results match.
 
 7. **Loading and using checkpoint:**
     - **Initialize Architecture:** Instantiate the MLP class using the hyperparameters (hidden units, dropout) found in the saved config.
