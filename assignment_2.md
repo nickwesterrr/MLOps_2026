@@ -373,18 +373,223 @@
 
 2. **Results (Average of 3 Seeds):**
 
+    - ![alt text](assets/plots/question-4.1/metrics_summary_seed42.png)
+        - PS: The graph of the metrics is different from seed 43 and seed 44 configuration, because we changed how the metrics are recorded/logged (steps -> epochs). 
+    - ![alt text](assets/plots/question-4.1/metrics_summary_seed43.png) 
+    - ![alt text](assets/plots/question-4.1/metrics_summary_seed44.png)
+
+    - Output table after running the average_metrics script in ./scripts/average_metrics.py
+        File                                     | Acc      | F2       | AUC     
+        ---------------------------------------------------------------------------
+        history_seed42.json                      | 0.7360   | 0.6946   | 0.8023
+        history_seed43.json                      | 0.7578   | 0.7927   | 0.8562
+        history_seed44.json                      | 0.8047   | 0.8293   | 0.8661
+        ---------------------------------------------------------------------------
+        AVERAGE                                  | 0.7662   | 0.7722   | 0.8416
+        STD DEV                                  | 0.0287   | 0.0568   | 0.0280
+
+    - On average, the model shows reliable performance with an ROC-AUC of 0.8416, indicating strong discrimination between tumor and non-tumor patches independent of threshold choice. The F2-score shows moderate variability (Std Dev: 0.0568, ~0.69–0.83), suggesting that random initialization affects recall, with Seed 44 outperforming Seed 42. Importantly, the slightly higher mean F2-score (0.77) compared to accuracy (0.76) indicates that the model appropriately prioritizes tumor detection over overall accuracy, which is desirable for this medical task.
+
 3. **Logging Scalability:**
+
+    - Ad-hoc logging fails in production MLOps for three reasons:
+        - **No Comparability:** It is impossible to compare 50 different experiments by scrolling through 50 different text files or terminal logs. Experiment trackers allow querying.
+        - **Loss of Metadata:** If the script crashes or the terminal is closed, print() output is lost. Proper trackers save data continuously.
+        - **Reproducibility issues:** Manually naming files leads to errors. Structured tracking links every artifact (model) automatically to the exact config and code commit that produced it.
 
 4. **Tracker Initialization:**
    ```python
    # Snippet showing tracker/MLFlow/W&B initialization
+    # Snippet 1
+    # In __init__
+    # We pass the full configuration dictionary to the tracker
+    self.tracker = ExperimentTracker(config)
+
+    # Snippet 2
+    # In train_epoch loop
+    if step % log_after_steps == 0:
+        self.tracker.log_metric("train_loss_per_step", loss.item())
+        self.tracker.log_metric("grad_norms", total_norm)
+
+    # In validate loop
+    self.tracker.log_metric("val_f2_score", f2)
+    self.tracker.log_metric("val_roc_auc", roc)
    ```
 
 5. **Evidence of Logging:**
 
+    - [config.yaml]
+    ```yaml
+    data:
+      batch_size: 128
+      data_path: ./data/
+      dataset_type: pcam
+      input_shape:
+      - 3
+      - 96
+      - 96
+      num_workers: 2
+    experiment_name: pcam_mlp_baseline
+    model:
+      dropout_rate: 0.2
+      hidden_units:
+      - 512
+      - 256
+      num_classes: 2
+    seed: 42
+    training:
+      epochs: 5
+      gamma: 0.1
+      learning_rate: 0.001
+      log_after_steps: 10
+      optimizer: adam
+      save_dir: ./experiments/results
+      scheduler: step
+      step_size: 2
+    ```
+
+    - [git-commit-hash]:
+
+    - [requirements.txt]:
+    ```txt
+    absl-py==2.3.1
+    cfgv==3.5.0
+    contourpy==1.3.3
+    cycler==0.12.1
+    distlib==0.4.0
+    filelock==3.20.3
+    flit_core @ file:///tmp/jenkins/build/Python/3.13.1/GCCcore-14.2.0/flit_core/flit_core-3.10.1
+    fonttools==4.61.1
+    fsspec==2025.12.0
+    grpcio==1.76.0
+    h5py==3.15.1
+    identify==2.6.16
+    iniconfig==2.3.0
+    Jinja2==3.1.6
+    joblib==1.5.3
+    kiwisolver==1.4.9
+    Markdown==3.10
+    MarkupSafe==3.0.2
+    matplotlib==3.10.8
+    ml_core==0.1.0
+    mpmath==1.3.0
+    networkx==3.6.1
+    nodeenv==1.10.0
+    numpy==2.3.5
+    nvidia-cublas-cu11==11.11.3.6
+    nvidia-cuda-cupti-cu11==11.8.87
+    nvidia-cuda-nvrtc-cu11==11.8.89
+    nvidia-cuda-runtime-cu11==11.8.89
+    nvidia-cudnn-cu11==9.1.0.70
+    nvidia-cufft-cu11==10.9.0.58
+    nvidia-curand-cu11==10.3.0.86
+    nvidia-cusolver-cu11==11.4.1.48
+    nvidia-cusparse-cu11==11.7.5.86
+    nvidia-nccl-cu11==2.21.5
+    nvidia-nvtx-cu11==11.8.86
+    packaging @ file:///tmp/jenkins/build/Python/3.13.1/GCCcore-14.2.0/packaging/packaging-24.2
+    pandas==2.3.3
+    pillow==12.0.0
+    platformdirs==4.5.1
+    pluggy==1.6.0
+    pre_commit==4.5.1
+    protobuf==6.33.4
+    Pygments==2.19.2
+    pyparsing==3.3.1
+    pytest==9.0.2
+    python-dateutil==2.9.0.post0
+    python-dotenv==1.2.1
+    pytz==2025.2
+    PyYAML==6.0.3
+    ruff==0.14.13
+    scikit-learn==1.8.0
+    scipy==1.17.0
+    setuptools @ file:///tmp/jenkins/build/Python/3.13.1/GCCcore-14.2.0/setuptools/setuptools-75.6.0
+    setuptools-scm @ file:///tmp/jenkins/build/Python/3.13.1/GCCcore-14.2.0/setuptools_scm/setuptools_scm-8.1.0
+    six==1.17.0
+    sympy==1.14.0
+    tensorboard==2.20.0
+    tensorboard-data-server==0.7.2
+    threadpoolctl==3.6.0
+    tomli @ file:///tmp/jenkins/build/Python/3.13.1/GCCcore-14.2.0/tomli/tomli-2.2.1
+    torch==2.7.1+cu118
+    torchaudio==2.7.1+cu118
+    torchvision==0.22.1+cu118
+    tqdm==4.67.1
+    triton==3.3.1
+    typing_extensions @ file:///tmp/jenkins/build/Python/3.13.1/GCCcore-14.2.0/typing_extensions/typing_extensions-4.12.2
+    tzdata==2025.3
+    virtualenv==20.36.1
+    Werkzeug==3.1.5
+    wheel @ file:///tmp/jenkins/build/Python/3.13.1/GCCcore-14.2.0/wheel/wheel-0.45.1
+    ```
+    
+    - [metrics] -> history.json file snippet after runnning batch job:
+    ```json
+    "val_accuracy": [
+        0.712188720703125,
+        0.7359619140625,
+        0.72430419921875,
+        0.715118408203125,
+        0.71453857421875
+    ],
+    "val_f2_score": [
+        0.6465462651029661,
+        0.6946476126176813,
+        0.6264903393784721,
+        0.6015462577962578,
+        0.5944666814430436
+    ],
+    "val_roc_auc": [
+        0.8090936450141302,
+        0.8023375068826193,
+        0.7875397473441181,
+        0.7759981289490276,
+        0.7805270855076397
+    ]
+    ```
+
+    - [plots]:
+        - **PS:** Look at the lower left corner plot
+        - ![alt text](assets/plots/question-5/metrics_summary_seed42.png) 
+        - ![alt text](assets/plots/question-5/metrics_summary_seed43.png) 
+        - ![alt text](assets/plots/question-5/metrics_summary_seed44.png)
+
+    - [checkpoints]:
+    - **PS:** Just a snippet for seed 42 
+    ```cmd
+    (.venv) scur2282@int6:~/MLOps_2026$ ls -l experiments/results/run_q4/seed42/*.pt
+    -rw-------. 1 scur2282 scur2282 171469157 Jan 21 17:21 experiments/results/run_q4/seed42/checkpoint_epoch_1.pt
+    -rw-------. 1 scur2282 scur2282 171471461 Jan 21 17:23 experiments/results/run_q4/seed42/checkpoint_epoch_2.pt
+    -rw-------. 1 scur2282 scur2282 171473701 Jan 21 17:26 experiments/results/run_q4/seed42/checkpoint_epoch_3.pt
+    -rw-------. 1 scur2282 scur2282 171476005 Jan 21 17:28 experiments/results/run_q4/seed42/checkpoint_epoch_4.pt
+    -rw-------. 1 scur2282 scur2282 171478245 Jan 21 17:30 experiments/results/run_q4/seed42/checkpoint_epoch_5.pt
+    ```
+
 6. **Reproduction & Checkpoint Usage:**
 
-7. **Deployment Issues:**
+
+
+7. **Loading and using checkpoint:**
+    - **Initialize Architecture:** Instantiate the MLP class using the hyperparameters (hidden units, dropout) found in the saved config.
+    - **Load State:** Use torch.load to read checkpoint_epoch_5.pt
+    - **Map Weights:** Apply weights using model.load_state_dict(checkpoint["model_state_dict"])
+    - **Eval Mode:** Set model.eval() to disable dropout
+    - **Predict:** Pass new data tensors through the model
+
+8. **Deployment Issues:**
+
+    - ## Issue 1: Data Drift (Domain Shift)
+        - **Problem:** The model was trained on the PCAM histopathology dataset. When deployed in a different hospital using other scanners, the pixel intensity distribution may shift, leading to degraded performance.
+        - **Mitigation:** Monitor input data statistics like mean and standard deviation. If they deviate significantly from the training distribution, trigger an alert to retrain the model or apply stain-normalization preprocessing.
+
+    - ## Issue 2: Preprocessing Mismatch
+        - **Problem:** The training pipeline normalizes inputs by dividing pixel values by 255.0. If this step is omitted during deployment or replaced with a different normalization scheme, the model will receive invalid inputs.
+        - **Mitigation:** Embed preprocessing directly into the model artifact or deploy the model within a container like a docker to guarantee consistent preprocessing.
+
+    - ## Issue 3: Hardware Incompatibility
+        - **Problem:** The model was trained on an NVIDIA A100 GPU, but deployment may occur on CPU-only servers or edge devices. This can cause issues when loading checkpoints or result in slow inference.
+        - **Mitigation:** Use `map_location='cpu'` when loading model checkpoints for portability. For improved performance and hardware independence, export the model to ONNX format for optimized inference.
 
 ---
 
