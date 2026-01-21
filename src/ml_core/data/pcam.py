@@ -43,13 +43,12 @@ class PCAMDataset(Dataset):
             kept = []
             with h5py.File(self.x_path, "r") as f:
                 x = f["x"]
-
                 for i in range(self.dataset_len):
                     img = x[i]
                     m = float(np.nan_to_num(img, nan=0.0).mean())
 
-                    is_black = (m <= 1.0) or (m <= 0.01)
-                    is_white = (m >= 254.0) or (m >= 0.99)
+                    is_black = m <= 1.0
+                    is_white = m >= 254.0
 
                     if not (is_black or is_white):
                         kept.append(i)
